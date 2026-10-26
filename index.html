@@ -5,17 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0A1D31">
 <meta property="og:title" content="It's Your Turn · Festival Compa">
-<meta property="og:description" content="Alege-ți domeniul, trage o carte și primește provocarea ta.">
+<meta property="og:description" content="Alege un domeniu, trage o carte și vezi ce provocare ai săptămâna asta.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://delutamarin.github.io/its-your-turn/share.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:url" content="https://delutamarin.github.io/its-your-turn/">
+<meta property="og:image" content="share.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F2A45'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23E8693A'/%3E%3Cpath d='M27 20l12 12-12 12' fill='none' stroke='%230F2A45' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>It's Your Turn</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Festival Compa: alege un domeniu și trage cartea cu provocarea ta.">
+<meta name="description" content="It&#x27;s your turn, de la Festival Compa: alege un domeniu, trage o carte și ai o săptămână să faci provocarea.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Jost:wght@400;500;600&family=Oswald:wght@500;600&display=swap">
@@ -174,11 +171,11 @@ button{font:inherit;color:inherit}
         </div>
       </div>
     </header>
-    <p class="lede">Fiecare domeniu are <strong>5 cărți</strong> cu provocări. Alege unul, trage o carte și pune provocarea în practică săptămâna aceasta.</p>
+    <p class="lede">Fiecare domeniu are 5 cărți cu provocări. Alege unul, trage o carte și <strong>ai o săptămână</strong> să faci ce scrie pe ea.</p>
   </div>
 
   <section class="deck" aria-labelledby="deck-title">
-    <h2 id="deck-title" class="section-label">Alege-ți domeniul</h2>
+    <h2 id="deck-title" class="section-label">Alege un domeniu</h2>
     <ul class="domains" id="domains"></ul>
   </section>
 
@@ -209,7 +206,7 @@ button{font:inherit;color:inherit}
               </span>
             </div>
           </div>
-          <button type="button" class="flip-btn" id="flip" aria-label="Întoarce cartea și vezi provocarea"></button>
+          <button type="button" class="flip-btn" id="flip" aria-label="Întoarce cartea ca să vezi provocarea"></button>
         </div>
         <div class="face face-back" aria-hidden="true" id="back-face">
           <span class="b-num" id="b-num"></span>
@@ -228,7 +225,7 @@ button{font:inherit;color:inherit}
   </div>
 
   <div class="under">
-    <p class="hint" id="hint"><i></i>Atinge cartea ca s-o întorci</p>
+    <p class="hint" id="hint"><i></i>Apasă pe carte ca s-o întorci</p>
     <p class="note" id="note" hidden></p>
     <div class="actions" id="actions" hidden></div>
     <p class="tip" id="tip" hidden></p>
@@ -239,40 +236,40 @@ button{font:inherit;color:inherit}
 
 <script>
 const DOMAINS = [
-  { id: 'serve', name: 'Serve', motto: 'Fii mâinile lui Isus. Iubește prin ceea ce faci.', items: [
-    'Fă un gest concret de ajutor pentru cineva săptămâna aceasta, fără să ți se ceară.',
-    'Oferă o oră din timpul tău pentru a ajuta un coleg care are dificultăți la o materie.',
-    'Fă ceva util pentru cineva din familia ta, fără să aștepți să fii rugat sau răsplătit.',
-    'Gândește-te la o persoană în vârstă care are nevoie de ajutor. Viziteaz-o sau ajut-o cu ceva practic.',
-    'Renunță la o parte din timpul tău liber pentru a face un bine cuiva care are nevoie de tine.'
+  { id: 'serve', name: 'Serve', motto: 'Fii mâinile lui Isus. Iubește prin ce faci.', items: [
+    'Săptămâna asta, ajută pe cineva cu ceva concret, fără să ți se ceară.',
+    'Oferă o oră din timpul tău ca să ajuți un coleg care se descurcă greu la o materie.',
+    'Fă ceva util pentru cineva din familia ta, fără să aștepți să fii rugat sau să primești ceva în schimb.',
+    'Gândește-te la o persoană în vârstă care are nevoie de ajutor. Fă-i o vizită sau ajut-o cu ceva practic.',
+    'Renunță la o parte din timpul tău liber ca să faci un bine cuiva care are nevoie de tine.'
   ]},
-  { id: 'see', name: 'See', motto: 'Privește oamenii cu ochii lui Isus.', items: [
-    'Observă pe cineva care este adesea ignorat sau exclus. Fă-l să simtă că este important.',
-    'La următoarea întâlnire de tineret, caută persoana care stă singură. Apropie-te și vorbește cu ea.',
-    'Fii atent la un coleg care pare mai retras decât de obicei. Întreabă-l sincer dacă este bine.',
-    'Privește dincolo de aparențe. Încearcă să cunoști un coleg pe care până acum l-ai judecat sau evitat.',
-    'Observă cine muncește în spatele unei activități, fără să fie remarcat. Mulțumește-i personal.'
+  { id: 'see', name: 'See', motto: 'Privește-i pe oameni cu ochii lui Isus.', items: [
+    'Observă pe cineva care e deseori ignorat sau lăsat deoparte. Arată-i că și el contează.',
+    'La următoarea întâlnire de tineret, caută persoana care stă singură. Du-te la ea și intră în vorbă.',
+    'Fii atent la un coleg care pare mai retras decât de obicei. Întreabă-l sincer dacă e bine.',
+    'Nu te opri la aparențe. Încearcă să cunoști un coleg pe care până acum l-ai judecat sau evitat.',
+    'Observă cine muncește în spatele unei activități, fără să-l bage nimeni în seamă. Mulțumește-i personal.'
   ]},
-  { id: 'encourage', name: 'Encourage', motto: 'Fii vocea care încurajează, nu care rănește.', items: [
-    'Când prietenii tăi încep să bârfească pe cineva, nu participa. Ai curajul să schimbi conversația.',
-    'Trimite un mesaj unui prieten care trece printr-o perioadă grea. Spune-i că ești alături de el.',
-    'Când cineva este ironizat în grup, nu râde împreună cu ceilalți. Fii persoana care îl susține.',
-    'Încurajează un coleg care a luat o notă mică sau a avut un eșec. Amintește-i că un rezultat nu îl definește.',
-    'Spune sincer unei persoane trei lucruri pe care le apreciezi la ea. Alege pe cineva care primește rar încurajări.'
+  { id: 'encourage', name: 'Encourage', motto: 'Fii vocea care încurajează, nu cea care rănește.', items: [
+    'Când prietenii tăi încep să bârfească pe cineva, nu intra în joc. Ai curajul să schimbi subiectul.',
+    'Trimite-i un mesaj unui prieten care trece printr-o perioadă grea. Spune-i că ești alături de el.',
+    'Când cineva e luat în râs în grup, nu râde și tu cu ceilalți. Fii cel care e de partea lui.',
+    'Încurajează un coleg care a luat o notă mică sau a dat greș la ceva. Spune-i că asta nu schimbă cât valorează el.',
+    'Spune-i sincer cuiva trei lucruri pe care le apreciezi la el. Alege pe cineva care aude rar o vorbă bună.'
   ]},
-  { id: 'speak', name: 'Speak', motto: 'Ai curaj să vorbești despre Isus.', items: [
-    'Trimite unui prieten un verset biblic care te-a încurajat. Spune-i de ce este important pentru tine.',
-    'Povestește unui coleg despre o experiență în care ai simțit că Dumnezeu te-a ajutat.',
-    'Dacă cineva te întreabă de ce mergi la biserică sâmbăta, explică-i sincer ce înseamnă Sabatul pentru tine.',
-    'Invită un prieten care nu merge la biserică să participe cu tine la o întâlnire de tineret.',
-    'Vorbește unui prieten despre un lucru pe care îl admiri la Isus și despre cum încerci să-I urmezi exemplul.'
+  { id: 'speak', name: 'Speak', motto: 'Ai curajul să vorbești despre Isus.', items: [
+    'Trimite-i unui prieten un verset din Biblie care te-a încurajat. Spune-i și de ce contează pentru tine.',
+    'Povestește-i unui coleg o întâmplare în care ai simțit că Dumnezeu te-a ajutat.',
+    'Dacă te întreabă cineva de ce mergi la biserică sâmbăta, spune-i sincer ce înseamnă Sabatul pentru tine.',
+    'Invită un prieten care nu merge la biserică să vină cu tine la o întâlnire de tineret.',
+    'Spune-i unui prieten un lucru pe care îl admiri la Isus și cum încerci să-I urmezi exemplul.'
   ]},
   { id: 'pray', name: 'Pray', motto: 'Poartă-ți prietenii în rugăciune.', items: [
-    'Alege un coleg pentru care nu te-ai mai rugat până acum. Roagă-te pentru el în fiecare zi, timp de o săptămână.',
-    'Întreabă un prieten: „Există ceva pentru care ai vrea să mă rog?” Apoi roagă-te concret pentru nevoia lui.',
-    'Roagă-te timp de șapte zile pentru o persoană cu care îți este greu să te înțelegi.',
-    'Înainte să pleci la liceu, roagă-L pe Dumnezeu să-ți arate cui poți face bine în ziua respectivă.',
-    'Alege trei prieteni care nu Îl cunosc pe Isus. Roagă-te pentru ei și pentru ocazia de a le împărtăși credința ta.'
+    'Alege un coleg pentru care nu te-ai rugat niciodată. Roagă-te pentru el în fiecare zi, o săptămână întreagă.',
+    'Întreabă un prieten: „Vrei să mă rog pentru ceva anume?” Apoi roagă-te concret pentru ce ți-a spus.',
+    'Roagă-te șapte zile la rând pentru o persoană cu care îți e greu să te înțelegi.',
+    'Înainte să pleci la liceu, roagă-L pe Dumnezeu să-ți arate cui îi poți face un bine în ziua aceea.',
+    'Alege trei prieteni care nu-L cunosc pe Isus. Roagă-te pentru ei și pentru o ocazie să le vorbești despre credința ta.'
   ]}
 ];
 
@@ -313,13 +310,13 @@ const dotsHtml = n => '<span class="dots" aria-hidden="true">' + Array.from({ le
 function renderHome() {
   $('#domains').innerHTML = DOMAINS.map(d => {
     const n = doneOf(d.id).length;
-    const status = n ? `${n} din 5 făcute` : '5 cărți';
+    const status = n ? `Făcute: ${n} din 5` : '5 provocări';
     return `<li><button type="button" class="domain" data-id="${d.id}" style="--c:var(--${d.id})">
       <span class="d-icon">${icon(d.id)}</span>
       <span class="d-text">
         <span class="d-name">${d.name}</span>
-        <span class="d-motto">${d.motto}</span>
-        <span class="d-status">${dotsHtml(n)}<span class="d-count">${status}</span>${hasActive(d.id) ? '<span class="pill">Carte activă</span>' : ''}</span>
+        <span class="d-motto">${nw(d.motto)}</span>
+        <span class="d-status">${dotsHtml(n)}<span class="d-count">${status}</span>${hasActive(d.id) ? '<span class="pill">Carte trasă</span>' : ''}</span>
       </span>
       <svg class="d-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
     </button></li>`;
@@ -336,6 +333,7 @@ function openDomain(id, animate = true) {
   view.style.setProperty('--c', `var(--${id})`);
   $('#v-name').textContent = d.name;
   $('#v-motto').textContent = d.motto;
+  keepHyphens($('#v-motto'));
   $('#b-label').textContent = d.name;
   $('#b-icon').innerHTML = icon(id);
 
@@ -367,22 +365,27 @@ function goHome() {
   if (row) row.focus({ preventScroll: true });
 }
 
+// Keep words like "roagă-te" or "Fă-i" on one line: browsers may otherwise break the line after the hyphen.
+const nw = s => s.replace(/\S+-\S+/g, w => `<span class="nw">${w}</span>`);
+const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+function keepHyphens(el) { el.innerHTML = nw(esc(el.textContent)); }
+
 function fillChallenge(i) {
   const d = byId[current];
   $('#b-title').textContent = 'Provocarea ta';
-  // keep words like "roagă-te" or "Fă-l" on one line
-  $('#b-text').innerHTML = d.items[i].replace(/\S+-\S+/g, w => `<span class="nw">${w}</span>`);
+  $('#b-text').innerHTML = nw(d.items[i]);
   $('#b-num').textContent = `${i + 1} / 5`;
 }
 function fillComplete() {
-  $('#b-title').textContent = 'Toate 5 făcute';
-  $('#b-text').textContent = 'Ai trecut prin toate provocările din acest domeniu. Alege altul sau ia-o de la capăt.';
+  $('#b-title').textContent = '5 din 5';
+  $('#b-text').textContent = 'Ai făcut toate cele 5 provocări din domeniul ăsta. Alege altul sau ia-o de la capăt.';
+  keepHyphens($('#b-text'));
   $('#b-num').textContent = '';
 }
 
 const STATES = {
   up:       { primary: ['done', 'Am făcut-o', true], ghost: ['home', 'Alege alt domeniu'] },
-  done:     { primary: ['next', 'Trage următoarea carte'], ghost: ['undo', 'Anulează bifa'] },
+  done:     { primary: ['next', 'Trage următoarea carte'], ghost: ['undo', 'Scoate bifa'] },
   complete: { primary: ['reset', 'Ia-o de la capăt'], ghost: ['home', 'Alege alt domeniu'] }
 };
 
@@ -400,15 +403,17 @@ function setState(s) {
 
   const note = $('#note');
   if (s === 'done') {
-    note.textContent = n >= 5 ? 'Bravo! Ai bifat toate cele 5 cărți din acest domeniu.' : 'Bravo! Când ești gata, trage următoarea carte.';
+    note.textContent = n >= 5 ? 'Bravo! Ai făcut toate cele 5 provocări din domeniul ăsta.' : 'Bravo! Când ești gata, trage următoarea carte.';
+    keepHyphens(note);
     note.hidden = false;
   } else note.hidden = true;
 
   const tip = $('#tip');
   if (s === 'up') {
     tip.textContent = canSave
-      ? 'Cartea rămâne salvată pe acest telefon. Fă și o captură de ecran, ca s-o ai mereu la îndemână.'
-      : 'Fă o captură de ecran, ca s-o ai mereu la îndemână.';
+      ? 'Cartea rămâne salvată pe telefonul ăsta. Fă-i și un screenshot, ca s-o ai mereu la îndemână.'
+      : 'Fă un screenshot cu cartea, ca s-o ai mereu la îndemână.';
+    keepHyphens(tip);
     tip.hidden = false;
   } else tip.hidden = true;
 
@@ -443,7 +448,7 @@ const ACT = {
     if (!done.includes(store.cur[current])) done.push(store.cur[current]);
     save();
     setState('done');
-    announce('Bifată ca făcută.');
+    announce('Ai bifat provocarea.');
     $('#actions .btn-primary').focus({ preventScroll: true });
   },
   undo() {
