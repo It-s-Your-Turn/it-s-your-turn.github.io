@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A1D31">
+<meta property="og:title" content="It's Your Turn · Festival Compa">
+<meta property="og:description" content="Alege-ți domeniul, trage o carte și primește provocarea ta.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://delutamarin.github.io/its-your-turn/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://delutamarin.github.io/its-your-turn/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F2A45'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23E8693A'/%3E%3Cpath d='M27 20l12 12-12 12' fill='none' stroke='%230F2A45' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>It's Your Turn</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Festival Compa: alege un domeniu și trage cartea cu provocarea ta.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Jost:wght@400;500;600&family=Oswald:wght@500;600&display=swap">
+<style>
+/* Layout: one phone-width column. Home = the card front as a banner + the five-domain deck.
+   Domain view = one A7 card (74 × 105) that flips from the front to the challenge. */
+:root{
+  color-scheme:dark;
+  --ink:#0A1D31;        /* page ground, a shade under the card stock */
+  --navy:#0F2A45;       /* card stock */
+  --navy-hi:#143352;
+  --rule:rgba(196,214,234,.14);
+  --rule-hi:rgba(196,214,234,.34);
+  --paper:#FFFFFF;
+  --mist:#AFC0D2;
+  --serve:#E8693A;
+  --see:#3FA690;
+  --encourage:#7BA6E2;
+  --speak:#E8748A;
+  --pray:#A77BDD;
+  --display:"Anton","Oswald",Impact,"Arial Narrow",sans-serif;
+  --label:"Oswald","Arial Narrow",sans-serif;
+  --body:"Jost","Futura","Avenir Next","Century Gothic",system-ui,sans-serif;
+  --u:1cqi;             /* 1% of the card's width */
+  --c:var(--serve);
+}
+@supports not (width:1cqi){:root{--u:calc(min(380px,100vw - 32px) / 100)}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--ink);color:var(--paper);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-x:clip}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--paper);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+.wrap{width:100%;max-width:460px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 40px}
+
+/* ---------- Card front: FESTIVAL COMPA / IT'S YOUR TURN + circle ---------- */
+.front{position:relative;display:flex;flex-direction:column;container-type:inline-size;overflow:hidden;--yt:32}
+.front-in{flex:1;display:flex;flex-direction:column;padding:calc(11*var(--u)) calc(9*var(--u)) calc(9*var(--u))}
+.eyebrow{margin:0;font-family:var(--label);font-weight:500;text-transform:uppercase;letter-spacing:.42em;font-size:calc(3.8*var(--u));line-height:1.2;color:var(--paper)}
+.yt{position:relative;margin:auto 0;display:flex;flex-direction:column;align-items:flex-start;font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:calc(var(--yt)*var(--u));line-height:.8;color:var(--paper)}
+.yt-w{position:relative;z-index:1;display:block}
+.yt-dot{position:absolute;z-index:0;left:calc(var(--yt)*1.2*var(--u));top:calc(var(--yt)*.26*var(--u));width:calc(var(--yt)*1.75*var(--u));height:calc(var(--yt)*1.75*var(--u));border-radius:50%;background:var(--c);display:flex;align-items:center;justify-content:center;padding-left:calc(var(--yt)*.38*var(--u))}
+.yt-dot svg{width:calc(var(--yt)*1.2*var(--u));height:calc(var(--yt)*1.2*var(--u));fill:none;stroke:var(--navy);stroke-width:4.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- Home ---------- */
+.hero .front{--yt:27;background:var(--navy);border-radius:22px;box-shadow:inset 0 0 0 1px var(--rule)}
+.hero .front-in{padding-block:calc(9*var(--u)) calc(10*var(--u))}
+.hero .yt{margin-top:calc(7*var(--u))}
+.lede{margin:18px 2px 0;font-size:17px;line-height:1.45;color:var(--mist);max-width:36ch}
+.lede strong{color:var(--paper);font-weight:500}
+.deck{margin-top:28px}
+.section-label{margin:0 0 12px 2px;font-family:var(--label);font-weight:500;text-transform:uppercase;letter-spacing:.3em;font-size:13px;color:var(--mist)}
+.domains{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.domain{width:100%;display:grid;grid-template-columns:52px minmax(0,1fr) 20px;align-items:center;gap:14px;padding:14px 12px 14px 14px;text-align:left;background:var(--navy);border:1px solid var(--rule);border-radius:18px;cursor:pointer;transition:background-color .2s,border-color .2s,transform .15s}
+.domain:hover{background:var(--navy-hi);border-color:var(--rule-hi)}
+.domain:active{transform:scale(.985)}
+.d-icon{width:52px;height:52px;border-radius:50%;background:var(--c);display:grid;place-items:center}
+.d-icon svg{width:34px;height:34px;stroke-width:1.7}
+.d-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.d-name{font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.28em;font-size:17px;line-height:1.25;color:var(--c)}
+.d-motto{font-size:15px;line-height:1.35;color:var(--mist)}
+.d-status{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:6px}
+.dots{display:inline-flex;gap:4px}
+.dot{width:7px;height:7px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--rule-hi)}
+.dot.on{background:var(--c);box-shadow:none}
+.d-count{font-family:var(--label);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mist)}
+.pill{font-family:var(--label);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--c);border:1px solid currentColor;border-radius:999px;padding:1px 8px}
+.d-go{width:20px;height:20px;fill:none;stroke:var(--mist);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sign{margin:40px 0 0;text-align:center;font-family:var(--label);font-weight:500;text-transform:uppercase;letter-spacing:.36em;padding-left:.36em;font-size:13px;line-height:1.9;color:var(--paper)}
+.sign em{font-style:normal;color:var(--serve)}
+
+/* icon art shared by rows and cards */
+.ico{fill:none;stroke:var(--paper);stroke-linecap:round;stroke-linejoin:round}
+.ico .pt{stroke-width:2.6}
+
+/* ---------- Domain view ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
+.back{display:inline-flex;align-items:center;gap:6px;background:none;border:0;margin-left:-8px;padding:10px 12px 10px 8px;border-radius:12px;font-family:var(--label);font-weight:500;letter-spacing:.16em;text-transform:uppercase;font-size:13px;color:var(--mist);cursor:pointer}
+.back:hover{color:var(--paper)}
+.back svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.v-prog{display:inline-flex;align-items:center;gap:8px;font-family:var(--label);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mist)}
+.v-head{display:grid;gap:4px;text-align:center;margin:8px 0 18px}
+.v-name{margin:0;font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.42em;padding-left:.42em;font-size:15px;color:var(--c)}
+.v-motto{margin:0;font-size:16px;line-height:1.4;color:var(--mist);text-wrap:balance}
+
+.stage{position:relative;padding-block:6px}
+.stage::before{content:"";position:absolute;inset:-4% 0;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 24%,transparent),transparent);pointer-events:none}
+.card{position:relative;width:min(100%,380px);margin-inline:auto;container-type:inline-size;perspective:1600px}
+.flipper{display:grid;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,.7,.15,1)}
+.card.is-flipped .flipper{transform:rotateY(180deg)}
+.card.no-anim .flipper{transition:none}
+.face{grid-area:1/1;position:relative;display:flex;flex-direction:column;min-height:calc(141.9*var(--u));border-radius:calc(5.5*var(--u));background:var(--navy);overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden;box-shadow:inset 0 0 0 1px var(--rule),0 26px 50px -18px rgba(0,0,0,.6)}
+.face-front{transform:rotateY(0deg)}
+.face-back{transform:rotateY(180deg)}
+.face-front .front{flex:1}
+.flip-btn{position:absolute;inset:0;z-index:2;width:100%;border:0;background:transparent;border-radius:inherit;cursor:pointer}
+
+.back-in{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:calc(10*var(--u)) calc(8*var(--u)) calc(9*var(--u))}
+.b-num{position:absolute;top:calc(5*var(--u));left:calc(6*var(--u));font-family:var(--label);font-weight:500;letter-spacing:.14em;font-size:calc(3.2*var(--u));color:var(--mist)}
+.b-label{font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.55em;padding-left:.55em;font-size:calc(5*var(--u));line-height:1.2;color:var(--c)}
+.b-title{margin-top:calc(5*var(--u));font-family:var(--display);text-transform:uppercase;font-size:calc(13*var(--u));line-height:1;color:var(--paper)}
+.b-icon{flex:none;margin-top:calc(7*var(--u));width:calc(28*var(--u));height:calc(28*var(--u));border-radius:50%;background:var(--c);display:grid;place-items:center}
+.b-icon svg{width:calc(19*var(--u));height:calc(19*var(--u));stroke-width:1.45}
+.b-text{margin-block:auto;padding-block:calc(6*var(--u));max-width:calc(80*var(--u));font-size:calc(5.9*var(--u));line-height:1.36;font-weight:500;color:var(--paper);text-wrap:balance}
+.nw{white-space:nowrap}
+.b-rule{flex:none;width:calc(14*var(--u));height:max(2px,calc(.5*var(--u)));background:var(--c)}
+.b-sign{margin-top:calc(6*var(--u));font-family:var(--label);font-weight:500;text-transform:uppercase;letter-spacing:.4em;padding-left:.4em;font-size:calc(4*var(--u));line-height:1.75;color:var(--paper)}
+.b-sign em{font-style:normal;color:var(--c)}
+.stamp{position:absolute;z-index:1;top:calc(44*var(--u));right:calc(5*var(--u));display:inline-flex;align-items:center;gap:calc(1.6*var(--u));padding:calc(1.4*var(--u)) calc(3*var(--u));border:calc(.9*var(--u)) solid var(--c);border-radius:calc(2.2*var(--u));background:rgba(10,29,49,.72);color:var(--c);font-family:var(--display);text-transform:uppercase;font-size:calc(7*var(--u));letter-spacing:.06em;line-height:1.1;opacity:0;transform:rotate(-13deg) scale(.55);transition:opacity .2s,transform .4s cubic-bezier(.2,1.7,.4,1);pointer-events:none}
+.stamp svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.card.is-done .stamp{opacity:1;transform:rotate(-13deg) scale(1)}
+
+.under{width:min(100%,380px);margin:22px auto 0;display:grid;gap:12px;text-align:center}
+.hint{justify-self:center;display:inline-flex;align-items:center;gap:10px;font-family:var(--label);font-weight:500;letter-spacing:.2em;text-transform:uppercase;font-size:13px;color:var(--mist)}
+.hint i{width:9px;height:9px;border-radius:50%;background:var(--c);animation:pulse 1.6s ease-in-out infinite}
+.note{margin:0;font-size:17px;line-height:1.4;color:var(--paper);text-wrap:balance}
+.actions{display:grid;gap:10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:14px 22px;border-radius:999px;border:1.5px solid transparent;font-family:var(--label);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:15px;cursor:pointer;transition:transform .15s,background-color .2s,border-color .2s}
+.btn:active{transform:scale(.98)}
+.btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.btn-primary{background:var(--c);color:var(--ink)}
+.btn-ghost{background:transparent;color:var(--paper);border-color:var(--rule-hi)}
+.btn-ghost:hover{border-color:var(--paper)}
+.tip{margin:2px 0 0;font-size:14px;line-height:1.45;color:var(--mist);text-wrap:balance}
+
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.55);opacity:.5}}
+@keyframes deal{from{transform:translateY(26px) rotate(-3deg);opacity:0}to{transform:none;opacity:1}}
+.view.deal .card{animation:deal .55s cubic-bezier(.2,.8,.2,1) both}
+
+@media (min-width:880px){
+  .home{max-width:1060px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);column-gap:56px;align-items:start;padding-block:48px}
+  .home .intro{position:sticky;top:32px}
+  .home .deck{margin-top:0}
+  .home .sign{grid-column:1 / -1}
+}
+@media (prefers-reduced-motion:reduce){
+  .flipper,.stamp,.domain,.btn{transition:none}
+  .view.deal .card{animation:none}
+  .hint i{animation:none}
+}
+</style>
+</head>
+<body>
+<main id="home" class="wrap home">
+  <div class="intro">
+    <header class="hero">
+      <div class="front" style="--c:var(--serve)">
+        <div class="front-in">
+          <p class="eyebrow">Festival Compa</p>
+          <h1 class="yt">
+            <span class="yt-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.5 3.5 16.5 12l-9 8.5"/></svg></span>
+            <span class="yt-w">It’s</span><span class="yt-w">your</span><span class="yt-w">turn</span>
+          </h1>
+        </div>
+      </div>
+    </header>
+    <p class="lede">Fiecare domeniu are <strong>5 cărți</strong> cu provocări. Alege unul, trage o carte și pune provocarea în practică săptămâna aceasta.</p>
+  </div>
+
+  <section class="deck" aria-labelledby="deck-title">
+    <h2 id="deck-title" class="section-label">Alege-ți domeniul</h2>
+    <ul class="domains" id="domains"></ul>
+  </section>
+
+  <p class="sign">It’s your turn<br><em>to love</em> like Jesus.</p>
+</main>
+
+<main id="view" class="wrap view" hidden>
+  <nav class="topbar">
+    <button type="button" class="back" id="back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Domenii</button>
+    <span class="v-prog" id="v-prog"></span>
+  </nav>
+
+  <header class="v-head">
+    <h2 class="v-name" id="v-name"></h2>
+    <p class="v-motto" id="v-motto"></p>
+  </header>
+
+  <div class="stage">
+    <div class="card" id="card">
+      <div class="flipper">
+        <div class="face face-front">
+          <div class="front">
+            <div class="front-in" aria-hidden="true">
+              <span class="eyebrow">Festival Compa</span>
+              <span class="yt">
+                <span class="yt-dot"><svg viewBox="0 0 24 24"><path d="M7.5 3.5 16.5 12l-9 8.5"/></svg></span>
+                <span class="yt-w">It’s</span><span class="yt-w">your</span><span class="yt-w">turn</span>
+              </span>
+            </div>
+          </div>
+          <button type="button" class="flip-btn" id="flip" aria-label="Întoarce cartea și vezi provocarea"></button>
+        </div>
+        <div class="face face-back" aria-hidden="true" id="back-face">
+          <span class="b-num" id="b-num"></span>
+          <div class="back-in">
+            <span class="b-label" id="b-label"></span>
+            <span class="b-title" id="b-title">Provocarea ta</span>
+            <span class="b-icon" id="b-icon"></span>
+            <span class="b-text" id="b-text"></span>
+            <span class="b-rule"></span>
+            <span class="b-sign">It’s your turn<br><em>to love</em> like Jesus.</span>
+          </div>
+          <span class="stamp"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Făcut</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="under">
+    <p class="hint" id="hint"><i></i>Atinge cartea ca s-o întorci</p>
+    <p class="note" id="note" hidden></p>
+    <div class="actions" id="actions" hidden></div>
+    <p class="tip" id="tip" hidden></p>
+  </div>
+</main>
+
+<p class="sr" aria-live="polite" id="live"></p>
+
+<script>
+const DOMAINS = [
+  { id: 'serve', name: 'Serve', motto: 'Fii mâinile lui Isus. Iubește prin ceea ce faci.', items: [
+    'Fă un gest concret de ajutor pentru cineva săptămâna aceasta, fără să ți se ceară.',
+    'Oferă o oră din timpul tău pentru a ajuta un coleg care are dificultăți la o materie.',
+    'Fă ceva util pentru cineva din familia ta, fără să aștepți să fii rugat sau răsplătit.',
+    'Gândește-te la o persoană în vârstă care are nevoie de ajutor. Viziteaz-o sau ajut-o cu ceva practic.',
+    'Renunță la o parte din timpul tău liber pentru a face un bine cuiva care are nevoie de tine.'
+  ]},
+  { id: 'see', name: 'See', motto: 'Privește oamenii cu ochii lui Isus.', items: [
+    'Observă pe cineva care este adesea ignorat sau exclus. Fă-l să simtă că este important.',
+    'La următoarea întâlnire de tineret, caută persoana care stă singură. Apropie-te și vorbește cu ea.',
+    'Fii atent la un coleg care pare mai retras decât de obicei. Întreabă-l sincer dacă este bine.',
+    'Privește dincolo de aparențe. Încearcă să cunoști un coleg pe care până acum l-ai judecat sau evitat.',
+    'Observă cine muncește în spatele unei activități, fără să fie remarcat. Mulțumește-i personal.'
+  ]},
+  { id: 'encourage', name: 'Encourage', motto: 'Fii vocea care încurajează, nu care rănește.', items: [
+    'Când prietenii tăi încep să bârfească pe cineva, nu participa. Ai curajul să schimbi conversația.',
+    'Trimite un mesaj unui prieten care trece printr-o perioadă grea. Spune-i că ești alături de el.',
+    'Când cineva este ironizat în grup, nu râde împreună cu ceilalți. Fii persoana care îl susține.',
+    'Încurajează un coleg care a luat o notă mică sau a avut un eșec. Amintește-i că un rezultat nu îl definește.',
+    'Spune sincer unei persoane trei lucruri pe care le apreciezi la ea. Alege pe cineva care primește rar încurajări.'
+  ]},
+  { id: 'speak', name: 'Speak', motto: 'Ai curaj să vorbești despre Isus.', items: [
+    'Trimite unui prieten un verset biblic care te-a încurajat. Spune-i de ce este important pentru tine.',
+    'Povestește unui coleg despre o experiență în care ai simțit că Dumnezeu te-a ajutat.',
+    'Dacă cineva te întreabă de ce mergi la biserică sâmbăta, explică-i sincer ce înseamnă Sabatul pentru tine.',
+    'Invită un prieten care nu merge la biserică să participe cu tine la o întâlnire de tineret.',
+    'Vorbește unui prieten despre un lucru pe care îl admiri la Isus și despre cum încerci să-I urmezi exemplul.'
+  ]},
+  { id: 'pray', name: 'Pray', motto: 'Poartă-ți prietenii în rugăciune.', items: [
+    'Alege un coleg pentru care nu te-ai mai rugat până acum. Roagă-te pentru el în fiecare zi, timp de o săptămână.',
+    'Întreabă un prieten: „Există ceva pentru care ai vrea să mă rog?” Apoi roagă-te concret pentru nevoia lui.',
+    'Roagă-te timp de șapte zile pentru o persoană cu care îți este greu să te înțelegi.',
+    'Înainte să pleci la liceu, roagă-L pe Dumnezeu să-ți arate cui poți face bine în ziua respectivă.',
+    'Alege trei prieteni care nu Îl cunosc pe Isus. Roagă-te pentru ei și pentru ocazia de a le împărtăși credința ta.'
+  ]}
+];
+
+// Line icons on a 30-unit box; small rays echo the printed cards.
+const rays = (x, y) => `<g transform="translate(${x} ${y})"><path d="M12-4.2v2.4"/><path d="m6.6-2.8 1.3 1.9"/><path d="m17.4-2.8-1.3 1.9"/></g>`;
+const ICONS = {
+  serve: rays(4, 2.6) + '<path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"/><path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 15 6 6"/><path d="M19.5 8.5c.7-.7 1.5-1.6 1.5-2.7A2.73 2.73 0 0 0 16 4a2.78 2.78 0 0 0-5 1.8c0 1.2.8 2 1.5 2.8L16 12Z"/>',
+  see: rays(0, 3.4) + '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3.2"/>',
+  encourage: '<g transform="translate(-1.6 0)"><path d="m3 11 18-5v12L3 14v-3Z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/><path d="M24 9.4a3.6 3.6 0 0 1 0 5.2"/><path d="M26.2 7.2a6.6 6.6 0 0 1 0 9.6"/></g>',
+  speak: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path class="pt" d="M8 12h.01"/><path class="pt" d="M12 12h.01"/><path class="pt" d="M16 12h.01"/><path d="m20.7 3.3 1.6-1.6"/><path d="M23.2 6.9h2.2"/><path d="M17.3.9l.4-2.1"/>',
+  pray: rays(0, 1.6) + '<path d="M12 2.8c-1.3-1.2-3.3-.5-3.6 1.1L6.2 13.1l-3.4 3.4 3.8 3.8 5.4-5.4"/><path d="M12 2.8c1.3-1.2 3.3-.5 3.6 1.1l2.2 9.2 3.4 3.4-3.8 3.8-5.4-5.4"/><path d="M12 2.8v12.1"/><path d="m4.3 15 3.8 3.8"/><path d="m19.7 15-3.8 3.8"/>'
+};
+const icon = id => `<svg class="ico" viewBox="-3 -4 30 30" aria-hidden="true" focusable="false">${ICONS[id]}</svg>`;
+const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+const byId = Object.fromEntries(DOMAINS.map(d => [d.id, d]));
+const $ = s => document.querySelector(s);
+
+// Per-phone memory of the drawn card and the ones marked done.
+const KEY = 'its-your-turn-compa-v1';
+let store = { cur: {}, done: {} };
+let canSave = false;
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+  if (saved && typeof saved === 'object') store = { cur: saved.cur || {}, done: saved.done || {} };
+  localStorage.setItem(KEY + ':probe', '1');
+  localStorage.removeItem(KEY + ':probe');
+  canSave = true;
+} catch (e) {}
+function save() {
+  if (!canSave) return;
+  try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {}
+}
+const doneOf = id => (store.done[id] = Array.isArray(store.done[id]) ? store.done[id] : []);
+const hasActive = id => store.cur[id] != null && !doneOf(id).includes(store.cur[id]);
+const dotsHtml = n => '<span class="dots" aria-hidden="true">' + Array.from({ length: 5 }, (_, i) => `<i class="dot${i < n ? ' on' : ''}"></i>`).join('') + '</span>';
+
+function renderHome() {
+  $('#domains').innerHTML = DOMAINS.map(d => {
+    const n = doneOf(d.id).length;
+    const status = n ? `${n} din 5 făcute` : '5 cărți';
+    return `<li><button type="button" class="domain" data-id="${d.id}" style="--c:var(--${d.id})">
+      <span class="d-icon">${icon(d.id)}</span>
+      <span class="d-text">
+        <span class="d-name">${d.name}</span>
+        <span class="d-motto">${d.motto}</span>
+        <span class="d-status">${dotsHtml(n)}<span class="d-count">${status}</span>${hasActive(d.id) ? '<span class="pill">Carte activă</span>' : ''}</span>
+      </span>
+      <svg class="d-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+    </button></li>`;
+  }).join('');
+}
+
+let current = null;
+let state = 'down';
+
+function openDomain(id, animate = true) {
+  const d = byId[id];
+  current = id;
+  const view = $('#view');
+  view.style.setProperty('--c', `var(--${id})`);
+  $('#v-name').textContent = d.name;
+  $('#v-motto').textContent = d.motto;
+  $('#b-label').textContent = d.name;
+  $('#b-icon').innerHTML = icon(id);
+
+  const card = $('#card');
+  card.classList.add('no-anim');
+  const cur = store.cur[id];
+  if (cur != null) { fillChallenge(cur); setState(doneOf(id).includes(cur) ? 'done' : 'up'); }
+  else if (doneOf(id).length >= 5) { fillComplete(); setState('complete'); }
+  else setState('down');
+  void card.offsetWidth;
+  card.classList.remove('no-anim');
+
+  $('#home').hidden = true;
+  view.hidden = false;
+  window.scrollTo(0, 0);
+  view.classList.remove('deal');
+  if (animate) { void view.offsetWidth; view.classList.add('deal'); }
+  (state === 'down' ? $('#flip') : $('#back')).focus({ preventScroll: true });
+}
+
+function goHome() {
+  const was = current;
+  current = null;
+  renderHome();
+  $('#view').hidden = true;
+  $('#home').hidden = false;
+  window.scrollTo(0, 0);
+  const row = was && document.querySelector(`.domain[data-id="${was}"]`);
+  if (row) row.focus({ preventScroll: true });
+}
+
+function fillChallenge(i) {
+  const d = byId[current];
+  $('#b-title').textContent = 'Provocarea ta';
+  // keep words like "roagă-te" or "Fă-l" on one line
+  $('#b-text').innerHTML = d.items[i].replace(/\S+-\S+/g, w => `<span class="nw">${w}</span>`);
+  $('#b-num').textContent = `${i + 1} / 5`;
+}
+function fillComplete() {
+  $('#b-title').textContent = 'Toate 5 făcute';
+  $('#b-text').textContent = 'Ai trecut prin toate provocările din acest domeniu. Alege altul sau ia-o de la capăt.';
+  $('#b-num').textContent = '';
+}
+
+const STATES = {
+  up:       { primary: ['done', 'Am făcut-o', true], ghost: ['home', 'Alege alt domeniu'] },
+  done:     { primary: ['next', 'Trage următoarea carte'], ghost: ['undo', 'Anulează bifa'] },
+  complete: { primary: ['reset', 'Ia-o de la capăt'], ghost: ['home', 'Alege alt domeniu'] }
+};
+
+function setState(s) {
+  state = s;
+  const card = $('#card');
+  card.classList.toggle('is-flipped', s !== 'down');
+  card.classList.toggle('is-done', s === 'done');
+  $('#flip').hidden = s !== 'down';
+  $('#back-face').setAttribute('aria-hidden', s === 'down' ? 'true' : 'false');
+  $('#hint').hidden = s !== 'down';
+
+  const n = doneOf(current).length;
+  $('#v-prog').innerHTML = dotsHtml(n) + `<span>${n} din 5</span>`;
+
+  const note = $('#note');
+  if (s === 'done') {
+    note.textContent = n >= 5 ? 'Bravo! Ai bifat toate cele 5 cărți din acest domeniu.' : 'Bravo! Când ești gata, trage următoarea carte.';
+    note.hidden = false;
+  } else note.hidden = true;
+
+  const tip = $('#tip');
+  if (s === 'up') {
+    tip.textContent = canSave
+      ? 'Cartea rămâne salvată pe acest telefon. Fă și o captură de ecran, ca s-o ai mereu la îndemână.'
+      : 'Fă o captură de ecran, ca s-o ai mereu la îndemână.';
+    tip.hidden = false;
+  } else tip.hidden = true;
+
+  const actions = $('#actions');
+  const cfg = STATES[s];
+  if (!cfg) { actions.hidden = true; actions.innerHTML = ''; return; }
+  const [pAct, pLabel, pCheck] = cfg.primary;
+  const label = s === 'done' && n >= 5 ? 'Mai departe' : pLabel;
+  actions.innerHTML =
+    `<button type="button" class="btn btn-primary" data-act="${pAct}">${pCheck ? CHECK : ''}${label}</button>` +
+    `<button type="button" class="btn btn-ghost" data-act="${cfg.ghost[0]}">${cfg.ghost[1]}</button>`;
+  actions.hidden = false;
+}
+
+function announce(text) { $('#live').textContent = text; }
+
+function draw() {
+  const done = doneOf(current);
+  const pool = [0, 1, 2, 3, 4].filter(i => !done.includes(i));
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  store.cur[current] = pick;
+  save();
+  fillChallenge(pick);
+  setState('up');
+  announce('Provocarea ta: ' + byId[current].items[pick]);
+  $('#actions .btn-primary').focus({ preventScroll: true });
+}
+
+const ACT = {
+  done() {
+    const done = doneOf(current);
+    if (!done.includes(store.cur[current])) done.push(store.cur[current]);
+    save();
+    setState('done');
+    announce('Bifată ca făcută.');
+    $('#actions .btn-primary').focus({ preventScroll: true });
+  },
+  undo() {
+    store.done[current] = doneOf(current).filter(i => i !== store.cur[current]);
+    save();
+    setState('up');
+    $('#actions .btn-primary').focus({ preventScroll: true });
+  },
+  next() {
+    delete store.cur[current];
+    save();
+    if (doneOf(current).length >= 5) { fillComplete(); setState('complete'); $('#actions .btn-primary').focus({ preventScroll: true }); }
+    else { setState('down'); $('#flip').focus({ preventScroll: true }); }
+  },
+  reset() {
+    store.done[current] = [];
+    delete store.cur[current];
+    save();
+    setState('down');
+    $('#flip').focus({ preventScroll: true });
+  },
+  home: goHome
+};
+
+$('#domains').addEventListener('click', e => {
+  const row = e.target.closest('.domain');
+  if (row) openDomain(row.dataset.id);
+});
+$('#flip').addEventListener('click', draw);
+$('#back').addEventListener('click', goHome);
+$('#actions').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (b) ACT[b.dataset.act]();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && current) goHome(); });
+
+renderHome();
+const fromLink = location.hash.slice(1);
+if (byId[fromLink]) openDomain(fromLink, false);
+</script>
+</body>
+</html>
