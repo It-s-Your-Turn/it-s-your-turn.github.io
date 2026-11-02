@@ -446,15 +446,25 @@ function openProgress() {
 function badgeSvg(b) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600"><rect width="600" height="600" fill="#0F2A45"/><circle cx="300" cy="260" r="166" fill="${b.color}"/><circle cx="300" cy="260" r="144" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="4"/><text x="300" y="316" text-anchor="middle" font-family="Arial,sans-serif" font-size="150" fill="#fff">${b.symbol}</text><text x="300" y="494" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="42" fill="#fff">${b.name.toUpperCase()}</text><text x="300" y="538" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="#AFC0D2">IT’S YOUR TURN · FESTIVAL COMPA</text></svg>`;
 }
+// Square PNG, so it lands in the phone's gallery and can go straight into a story.
 function downloadBadge(b) {
-  const url = URL.createObjectURL(new Blob([badgeSvg(b)], { type: 'image/svg+xml;charset=utf-8' }));
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `its-your-turn-${b.id}.svg`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1080;
+    canvas.getContext('2d').drawImage(img, 0, 0, 1080, 1080);
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `its-your-turn-${b.id}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(badgeSvg(b));
 }
 
 let unlockedBadge = null;
@@ -525,7 +535,7 @@ function fillChallenge(i) {
 }
 function fillComplete() {
   $('#b-title').textContent = '5 din 5';
-  $('#b-text').textContent = 'Ai făcut toate cele 5 provocări din domeniul ăsta. Alege altul sau ia-o de la capăt.';
+  $('#b-text').textContent = 'Ai făcut toate cele 5 provocări din domeniul acesta. Alege altul sau ia-o de la capăt.';
   keepHyphens($('#b-text'));
   $('#b-num').textContent = '';
 }
@@ -550,7 +560,7 @@ function setState(s) {
 
   const note = $('#note');
   if (s === 'done') {
-    note.textContent = n >= 5 ? 'Bravo! Ai făcut toate cele 5 provocări din domeniul ăsta.' : 'Bravo! Când ești gata, trage următoarea carte.';
+    note.textContent = n >= 5 ? 'Bravo! Ai făcut toate cele 5 provocări din domeniul acesta.' : 'Bravo! Când ești gata, trage următoarea carte.';
     keepHyphens(note);
     note.hidden = false;
   } else note.hidden = true;
@@ -558,7 +568,7 @@ function setState(s) {
   const tip = $('#tip');
   if (s === 'up') {
     tip.textContent = canSave
-      ? 'Cartea rămâne salvată pe telefonul ăsta. Fă-i și un screenshot, ca s-o ai mereu la îndemână.'
+      ? 'Cartea rămâne salvată pe telefonul acesta. Fă-i și un screenshot, ca s-o ai mereu la îndemână.'
       : 'Fă un screenshot cu cartea, ca s-o ai mereu la îndemână.';
     keepHyphens(tip);
     tip.hidden = false;
