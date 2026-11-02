@@ -33,8 +33,10 @@ Site-ul e servit de GitHub Pages din ramura `main`, rădăcina repo-ului. Orice 
 - **`ICONS`**: iconițele SVG ale domeniilor.
 - **`STATES`**: ce butoane apar pentru fiecare stare a cărții (trasă, bifată, domeniu terminat) și textul lor.
 - **`ACT`**: ce face fiecare buton (bifează, trage următoarea carte, scoate bifa, ia-o de la capăt).
+- **`BADGES`**: insignele, cu numele, pragul (`min`, din totalul de 25 de provocări), simbolul și culoarea.
+- **`XP`**: câte puncte primește utilizatorul pentru fiecare provocare făcută. Textul de pe butonul din fereastra de confirmare (`#confirm-ok`) se schimbă separat.
 - **`KEY`**: cheia din `localStorage` unde se salvează progresul utilizatorului (`its-your-turn-compa-v1`). Dacă se schimbă structura datelor salvate, cheia trebuie mărită la `v2`, altfel utilizatorii vechi pot avea date incompatibile.
-- Funcțiile principale: `renderHome`, `openDomain`, `draw`, `fillChallenge`, `fillComplete`, `goHome`.
+- Funcțiile principale: `renderHome`, `openDomain`, `draw`, `fillChallenge`, `fillComplete`, `goHome`, `markDone`, `renderProgress`, `openProgress`, `showUnlocked`, `downloadBadge`.
 
 ## Identitate vizuală
 

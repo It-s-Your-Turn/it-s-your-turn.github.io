@@ -140,6 +140,40 @@ button{font:inherit;color:inherit}
 .btn-ghost:hover{border-color:var(--paper)}
 .tip{margin:2px 0 0;font-size:14px;line-height:1.45;color:var(--mist);text-wrap:balance}
 
+/* ---------- Progress view ---------- */
+.open-progress{margin-top:18px;width:100%}
+.p-title{margin:8px 0 18px;text-align:center;font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.3em;padding-left:.3em;font-size:17px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{display:grid;gap:2px;padding:14px 6px;text-align:center;background:var(--navy);border:1px solid var(--rule);border-radius:16px}
+.stat strong{font-family:var(--display);font-weight:400;font-size:28px;line-height:1.15}
+.stat small{font-family:var(--label);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mist)}
+.p-section{margin-top:28px}
+.bars{display:grid;gap:12px}
+.bar-head{display:flex;justify-content:space-between;font-family:var(--label);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
+.track{height:8px;margin-top:5px;border-radius:999px;background:var(--rule);overflow:hidden}
+.track i{display:block;height:100%;border-radius:inherit;background:var(--c)}
+.badges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 10px;text-align:center;background:var(--navy);border:1px solid var(--rule);border-radius:16px}
+.emblem{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--c);color:var(--paper);font-size:28px;line-height:1}
+.badge.locked .emblem{background:var(--rule);color:var(--mist)}
+.badge b{margin-top:6px;font-family:var(--label);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:14px}
+.badge.locked b{color:var(--mist)}
+.badge small{font-size:13px;line-height:1.35;color:var(--mist)}
+.badge-dl{margin-top:8px;padding:6px 12px;background:none;border:1px solid var(--rule-hi);border-radius:999px;font-family:var(--label);font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.fine{margin:14px 2px 0;font-size:13px;line-height:1.45;color:var(--mist)}
+
+/* ---------- Dialogs: confirm + badge unlocked ---------- */
+dialog{width:min(100% - 32px,380px);padding:26px 22px;color:var(--paper);background:var(--navy);border:1px solid var(--rule-hi);border-radius:22px;text-align:center}
+dialog::backdrop{background:rgba(5,15,26,.78)}
+dialog h2{margin:0;font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:30px;line-height:1.1}
+dialog p{margin:10px 0 0;font-size:15px;line-height:1.45;color:var(--mist)}
+.check{display:flex;align-items:flex-start;gap:10px;margin:16px 0;text-align:left;font-size:16px;line-height:1.35;cursor:pointer}
+.check input{flex:none;width:22px;height:22px;margin:0;accent-color:var(--c)}
+dialog .actions{margin-top:16px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+#unlocked .eyebrow{font-size:12px;letter-spacing:.3em;color:var(--c)}
+#unlocked .emblem{width:96px;height:96px;margin:18px auto;font-size:46px}
+
 @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.55);opacity:.5}}
 @keyframes deal{from{transform:translateY(26px) rotate(-3deg);opacity:0}to{transform:none;opacity:1}}
 .view.deal .card{animation:deal .55s cubic-bezier(.2,.8,.2,1) both}
@@ -177,6 +211,7 @@ button{font:inherit;color:inherit}
   <section class="deck" aria-labelledby="deck-title">
     <h2 id="deck-title" class="section-label">Alege un domeniu</h2>
     <ul class="domains" id="domains"></ul>
+    <button type="button" class="btn btn-ghost open-progress" id="open-progress"></button>
   </section>
 
   <p class="sign">It’s your turn<br><em>to love</em> like Jesus.</p>
@@ -232,6 +267,48 @@ button{font:inherit;color:inherit}
   </div>
 </main>
 
+<main id="progress" class="wrap" hidden>
+  <nav class="topbar">
+    <button type="button" class="back" id="progress-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Domenii</button>
+  </nav>
+  <h2 class="p-title">Progresul meu</h2>
+  <div class="stats">
+    <div class="stat"><strong id="s-count"></strong><small>Provocări</small></div>
+    <div class="stat"><strong id="s-xp"></strong><small>XP</small></div>
+    <div class="stat"><strong id="s-domains"></strong><small>Domenii</small></div>
+  </div>
+  <section class="p-section" aria-labelledby="bars-title">
+    <h3 id="bars-title" class="section-label">Pe domenii</h3>
+    <div class="bars" id="bars"></div>
+  </section>
+  <section class="p-section" aria-labelledby="badges-title">
+    <h3 id="badges-title" class="section-label">Insignele mele</h3>
+    <div class="badges" id="badges"></div>
+    <p class="fine">Insignele arată ce ai bifat tu. Nu ți se cer poze și nici date despre oamenii pe care i-ai ajutat.</p>
+  </section>
+</main>
+
+<dialog id="confirm" aria-labelledby="confirm-title">
+  <h2 id="confirm-title">Ai făcut-o?</h2>
+  <p>Bifează doar dacă ai făcut-o cu adevărat. N-ai nevoie de dovezi sau de poze.</p>
+  <label class="check"><input type="checkbox" id="honesty">Confirm că am făcut provocarea asta.</label>
+  <div class="actions">
+    <button type="button" class="btn btn-primary" id="confirm-ok" disabled>Confirmă · +5 XP</button>
+    <button type="button" class="btn btn-ghost" id="confirm-cancel">Nu încă</button>
+  </div>
+</dialog>
+
+<dialog id="unlocked" aria-labelledby="unlocked-title">
+  <p class="eyebrow">Insignă nouă</p>
+  <div class="emblem" id="unlocked-emblem" aria-hidden="true"></div>
+  <h2 id="unlocked-title"></h2>
+  <p id="unlocked-desc"></p>
+  <div class="actions">
+    <button type="button" class="btn btn-primary" id="unlocked-dl">Descarcă insigna</button>
+    <button type="button" class="btn btn-ghost" id="unlocked-close">Mai departe</button>
+  </div>
+</dialog>
+
 <p class="sr" aria-live="polite" id="live"></p>
 
 <script>
@@ -285,6 +362,16 @@ const ICONS = {
 const icon = id => `<svg class="ico" viewBox="-3 -4 30 30" aria-hidden="true" focusable="false">${ICONS[id]}</svg>`;
 const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
 
+// Unlocked by total challenges done, across all domains.
+const XP = 5;
+const BADGES = [
+  { id: 'first', name: 'Primul pas', min: 1, symbol: '↗', color: '#3FA690', desc: 'Ai făcut prima provocare.' },
+  { id: 'keep', name: 'Ține-o tot așa', min: 3, symbol: '➜', color: '#7BA6E2', desc: 'Ai făcut 3 provocări.' },
+  { id: 'love', name: 'Iubire în fapte', min: 5, symbol: '♥', color: '#E8693A', desc: 'Ai făcut 5 provocări.' },
+  { id: 'mode', name: 'În misiune', min: 10, symbol: '✦', color: '#A77BDD', desc: 'Ai făcut 10 provocări.' },
+  { id: 'all', name: 'Până la capăt', min: 25, symbol: '★', color: '#E8748A', desc: 'Ai făcut toate cele 25 de provocări.' }
+];
+
 const byId = Object.fromEntries(DOMAINS.map(d => [d.id, d]));
 const $ = s => document.querySelector(s);
 
@@ -304,6 +391,7 @@ function save() {
   try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {}
 }
 const doneOf = id => (store.done[id] = Array.isArray(store.done[id]) ? store.done[id] : []);
+const doneTotal = () => DOMAINS.reduce((n, d) => n + doneOf(d.id).length, 0);
 const hasActive = id => store.cur[id] != null && !doneOf(id).includes(store.cur[id]);
 const dotsHtml = n => '<span class="dots" aria-hidden="true">' + Array.from({ length: 5 }, (_, i) => `<i class="dot${i < n ? ' on' : ''}"></i>`).join('') + '</span>';
 
@@ -321,6 +409,63 @@ function renderHome() {
       <svg class="d-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
     </button></li>`;
   }).join('');
+  $('#open-progress').textContent = `Progresul meu · ${doneTotal()} din 25`;
+}
+
+function renderProgress() {
+  const total = doneTotal();
+  $('#s-count').textContent = total;
+  $('#s-xp').textContent = total * XP;
+  $('#s-domains').textContent = `${DOMAINS.filter(d => doneOf(d.id).length).length} / 5`;
+  $('#bars').innerHTML = DOMAINS.map(d => {
+    const n = doneOf(d.id).length;
+    return `<div style="--c:var(--${d.id})">
+      <div class="bar-head"><span>${d.name}</span><span>${n} / 5</span></div>
+      <div class="track"><i style="width:${n * 20}%"></i></div>
+    </div>`;
+  }).join('');
+  $('#badges').innerHTML = BADGES.map(b => {
+    const on = total >= b.min;
+    return `<div class="badge${on ? '' : ' locked'}" style="--c:${b.color}">
+      <span class="emblem" aria-hidden="true">${on ? b.symbol : '?'}</span>
+      <b>${b.name}</b>
+      <small>${on ? b.desc : `Se deblochează la ${b.min} din 25.`}</small>
+      ${on ? `<button type="button" class="badge-dl" data-badge="${b.id}">Descarcă</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function openProgress() {
+  renderProgress();
+  $('#home').hidden = true;
+  $('#progress').hidden = false;
+  window.scrollTo(0, 0);
+  $('#progress-back').focus({ preventScroll: true });
+}
+
+function badgeSvg(b) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600"><rect width="600" height="600" fill="#0F2A45"/><circle cx="300" cy="260" r="166" fill="${b.color}"/><circle cx="300" cy="260" r="144" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="4"/><text x="300" y="316" text-anchor="middle" font-family="Arial,sans-serif" font-size="150" fill="#fff">${b.symbol}</text><text x="300" y="494" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="42" fill="#fff">${b.name.toUpperCase()}</text><text x="300" y="538" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="#AFC0D2">IT’S YOUR TURN · FESTIVAL COMPA</text></svg>`;
+}
+function downloadBadge(b) {
+  const url = URL.createObjectURL(new Blob([badgeSvg(b)], { type: 'image/svg+xml;charset=utf-8' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `its-your-turn-${b.id}.svg`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+let unlockedBadge = null;
+function showUnlocked(b) {
+  unlockedBadge = b;
+  const dialog = $('#unlocked');
+  dialog.style.setProperty('--c', b.color);
+  $('#unlocked-emblem').textContent = b.symbol;
+  $('#unlocked-title').textContent = b.name;
+  $('#unlocked-desc').textContent = b.desc;
+  dialog.showModal();
 }
 
 let current = null;
@@ -358,10 +503,12 @@ function goHome() {
   const was = current;
   current = null;
   renderHome();
+  const fromProgress = !$('#progress').hidden;
   $('#view').hidden = true;
+  $('#progress').hidden = true;
   $('#home').hidden = false;
   window.scrollTo(0, 0);
-  const row = was && document.querySelector(`.domain[data-id="${was}"]`);
+  const row = fromProgress ? $('#open-progress') : was && document.querySelector(`.domain[data-id="${was}"]`);
   if (row) row.focus({ preventScroll: true });
 }
 
@@ -442,14 +589,26 @@ function draw() {
   $('#actions .btn-primary').focus({ preventScroll: true });
 }
 
+function markDone() {
+  const before = doneTotal();
+  const done = doneOf(current);
+  if (!done.includes(store.cur[current])) done.push(store.cur[current]);
+  save();
+  $('#confirm').close();
+  setState('done');
+  announce('Ai bifat provocarea.');
+  $('#actions .btn-primary').focus({ preventScroll: true });
+  const hit = BADGES.find(b => before < b.min && doneTotal() >= b.min);
+  if (hit) showUnlocked(hit);
+}
+
 const ACT = {
   done() {
-    const done = doneOf(current);
-    if (!done.includes(store.cur[current])) done.push(store.cur[current]);
-    save();
-    setState('done');
-    announce('Ai bifat provocarea.');
-    $('#actions .btn-primary').focus({ preventScroll: true });
+    const dialog = $('#confirm');
+    dialog.style.setProperty('--c', `var(--${current})`);
+    $('#honesty').checked = false;
+    $('#confirm-ok').disabled = true;
+    dialog.showModal();
   },
   undo() {
     store.done[current] = doneOf(current).filter(i => i !== store.cur[current]);
@@ -483,11 +642,26 @@ $('#actions').addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (b) ACT[b.dataset.act]();
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && current) goHome(); });
+$('#open-progress').addEventListener('click', openProgress);
+$('#progress-back').addEventListener('click', goHome);
+$('#badges').addEventListener('click', e => {
+  const b = e.target.closest('[data-badge]');
+  if (b) downloadBadge(BADGES.find(x => x.id === b.dataset.badge));
+});
+$('#honesty').addEventListener('change', e => { $('#confirm-ok').disabled = !e.target.checked; });
+$('#confirm-ok').addEventListener('click', markDone);
+$('#confirm-cancel').addEventListener('click', () => $('#confirm').close());
+$('#unlocked-dl').addEventListener('click', () => downloadBadge(unlockedBadge));
+$('#unlocked-close').addEventListener('click', () => $('#unlocked').close());
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape' || document.querySelector('dialog[open]')) return;
+  if (current || !$('#progress').hidden) goHome();
+});
 
 renderHome();
 const fromLink = location.hash.slice(1);
 if (byId[fromLink]) openDomain(fromLink, false);
+else if (fromLink === 'progres') openProgress();
 </script>
 </body>
 </html>
