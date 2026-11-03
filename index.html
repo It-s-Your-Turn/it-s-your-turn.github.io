@@ -372,7 +372,7 @@ dialog .actions{margin-top:16px}
   <nav class="topbar">
     <button type="button" class="back" id="shop-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Domenii</button>
   </nav>
-  <h2 class="p-title">Magazin</h2>
+  <h2 class="p-title">Compa Shop</h2>
   <div class="items" id="items"></div>
   <div class="shop-bar">
     <button type="button" class="btn btn-primary" id="see-cart"></button>
@@ -381,7 +381,7 @@ dialog .actions{margin-top:16px}
 
 <main id="cart" class="wrap" hidden>
   <nav class="topbar">
-    <button type="button" class="back" id="cart-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Magazin</button>
+    <button type="button" class="back" id="cart-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Compa Shop</button>
   </nav>
   <h2 class="p-title" id="cart-title">Coșul meu</h2>
   <div class="cart-empty" id="cart-empty" hidden>
@@ -543,7 +543,7 @@ function renderHome() {
     </button></li>`;
   }).join('');
   $('#open-progress').textContent = `Progresul meu · ${doneTotal()} din 25`;
-  $('#open-shop').textContent = cartCount() ? `Magazin · ${cartCount()} în coș` : 'Magazin';
+  $('#open-shop').textContent = cartCount() ? `Compa Shop · ${cartCount()} în coș` : 'Compa Shop';
   renderCommunity();
 }
 

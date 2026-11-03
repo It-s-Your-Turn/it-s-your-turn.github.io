@@ -130,7 +130,7 @@ Site-ul e servit de GitHub Pages din ramura `main`, rădăcina repo-ului. Orice 
 
 - Româna trebuie să sune natural, vorbit, la persoana a II-a („tu”). Nu traduceri cuvânt cu cuvânt din engleză.
 - Diacriticele se scriu cu virgulă dedesubt: ș, ț (nu ş, ţ cu sedilă).
-- În engleză rămân doar: „It's your turn”, „to love like Jesus”, numele celor 5 domenii, „Festival Compa” și numele produselor, pentru că așa sunt tipărite pe ele.
+- În engleză rămân doar: „It's your turn”, „to love like Jesus”, numele celor 5 domenii, „Festival Compa”, „Compa Shop” și numele produselor, pentru că așa sunt tipărite pe ele.
 
 ## Atenție la adresă
 
