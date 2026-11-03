@@ -9,6 +9,10 @@
 <meta property="og:type" content="website">
 <meta property="og:image" content="share.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F2A45'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23E8693A'/%3E%3Cpath d='M27 20l12 12-12 12' fill='none' stroke='%230F2A45' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-title" content="It's Your Turn">
+<meta name="mobile-web-app-capable" content="yes">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>It's Your Turn</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -60,9 +64,9 @@ button{font:inherit;color:inherit}
 .yt-dot svg{width:calc(var(--yt)*1.2*var(--u));height:calc(var(--yt)*1.2*var(--u));fill:none;stroke:var(--navy);stroke-width:4.4;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---------- Home ---------- */
-.hero .front{--yt:27;background:var(--navy);border-radius:22px;box-shadow:inset 0 0 0 1px var(--rule)}
-.hero .front-in{padding-block:calc(9*var(--u)) calc(10*var(--u))}
-.hero .yt{margin-top:calc(7*var(--u))}
+.hero .front{--yt:16;background:var(--navy);border-radius:22px;box-shadow:inset 0 0 0 1px var(--rule)}
+.hero .front-in{padding:calc(6*var(--u)) calc(6*var(--u)) calc(5*var(--u))}
+.hero .yt{margin-top:calc(4*var(--u))}
 .lede{margin:18px 2px 0;font-size:17px;line-height:1.45;color:var(--mist);max-width:36ch}
 .lede strong{color:var(--paper);font-weight:500}
 .deck{margin-top:28px}
@@ -140,8 +144,14 @@ button{font:inherit;color:inherit}
 .btn-ghost:hover{border-color:var(--paper)}
 .tip{margin:2px 0 0;font-size:14px;line-height:1.45;color:var(--mist);text-wrap:balance}
 
+/* ---------- Add to home screen ---------- */
+.install{margin-top:10px;width:100%}
+#install-steps{margin:14px 0 0;padding-left:22px;text-align:left;font-size:16px;line-height:1.4}
+#install-steps li+li{margin-top:6px}
+#install p{text-align:left}
+
 /* ---------- Collective counter ---------- */
-.community{margin-top:20px;padding:18px;background:var(--navy);border:1px solid var(--rule);border-radius:18px}
+.community{margin-inline:calc(6*var(--u));padding-block:14px calc(6*var(--u));border-top:1px solid var(--rule)}
 .c-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 12px}
 .c-title{margin:0;font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:14px;color:var(--mist)}
 .c-count{font-family:var(--display);font-size:30px;line-height:1.1;white-space:nowrap}
@@ -215,23 +225,24 @@ dialog .actions{margin-top:16px}
             <span class="yt-w">It’s</span><span class="yt-w">your</span><span class="yt-w">turn</span>
           </h1>
         </div>
+        <section class="community" id="community" aria-labelledby="c-title">
+          <div class="c-head">
+            <h2 class="c-title" id="c-title">1.000 de fapte de iubire</h2>
+            <span class="c-count" id="c-count"></span>
+          </div>
+          <div class="track"><i id="c-bar"></i></div>
+          <p class="c-msg" id="c-msg"></p>
+        </section>
       </div>
     </header>
     <p class="lede">Fiecare domeniu are 5 cărți cu provocări. Alege unul, trage o carte și <strong>ai o săptămână</strong> să faci ce scrie pe ea.</p>
-    <section class="community" id="community" aria-labelledby="c-title">
-      <div class="c-head">
-        <h2 class="c-title" id="c-title">1.000 de fapte de iubire</h2>
-        <span class="c-count" id="c-count"></span>
-      </div>
-      <div class="track"><i id="c-bar"></i></div>
-      <p class="c-msg" id="c-msg"></p>
-    </section>
   </div>
 
   <section class="deck" aria-labelledby="deck-title">
     <h2 id="deck-title" class="section-label">Alege un domeniu</h2>
     <ul class="domains" id="domains"></ul>
     <button type="button" class="btn btn-ghost open-progress" id="open-progress"></button>
+    <button type="button" class="btn btn-ghost install" id="install-open" hidden>Salvează pe ecranul principal</button>
   </section>
 
   <p class="sign">It’s your turn<br><em>to love</em> like Jesus.</p>
@@ -320,6 +331,15 @@ dialog .actions{margin-top:16px}
   <div class="actions">
     <button type="button" class="btn btn-primary" id="confirm-ok" disabled>Confirmă · +5 XP</button>
     <button type="button" class="btn btn-ghost" id="confirm-cancel">Nu încă</button>
+  </div>
+</dialog>
+
+<dialog id="install" aria-labelledby="install-title">
+  <h2 id="install-title">Pe ecranul principal</h2>
+  <ol id="install-steps"></ol>
+  <p>Dacă nu vezi opțiunea, deschide site-ul direct în Safari sau Chrome. Fă asta înainte să începi, ca progresul să rămână într-un singur loc.</p>
+  <div class="actions">
+    <button type="button" class="btn btn-ghost" id="install-close">Am înțeles</button>
   </div>
 </dialog>
 
@@ -781,6 +801,42 @@ $('#actions').addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (b) ACT[b.dataset.act]();
 });
+// Android offers its own install prompt; iPhones only allow it by hand, so they get the steps.
+let installPrompt = null;
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isAndroid = () => /Android/.test(navigator.userAgent);
+function renderInstall() {
+  $('#install-open').hidden = isStandalone() || !(installPrompt || isIOS() || isAndroid());
+}
+async function openInstall() {
+  if (installPrompt) {
+    const prompt = installPrompt;
+    installPrompt = null;
+    prompt.prompt();
+    await prompt.userChoice;
+    renderInstall();
+    return;
+  }
+  const steps = isIOS()
+    ? ['Apasă pe butonul de partajare (pătratul cu săgeată).', 'Alege „Adaugă pe ecranul principal” („Add to Home Screen”).', 'Apasă pe „Adaugă”.']
+    : ['Apasă pe meniul browserului (cele trei puncte).', 'Alege „Instalează aplicația” sau „Adaugă pe ecranul de pornire”.', 'Confirmă.'];
+  $('#install-steps').innerHTML = steps.map(s => `<li>${s}</li>`).join('');
+  $('#install').showModal();
+}
+addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  installPrompt = e;
+  renderInstall();
+});
+addEventListener('appinstalled', () => {
+  installPrompt = null;
+  $('#install-open').hidden = true;
+});
+$('#install-open').addEventListener('click', openInstall);
+$('#install-close').addEventListener('click', () => $('#install').close());
+renderInstall();
+
 $('#open-progress').addEventListener('click', openProgress);
 $('#progress-back').addEventListener('click', goHome);
 $('#badges').addEventListener('click', e => {

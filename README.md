@@ -14,6 +14,8 @@ Nu există build sau framework. Toată pagina e într-un singur fișier. Singura
 | `index.html` | Toată pagina: HTML, CSS și JavaScript inline |
 | `share.png` | Imaginea de previzualizare la share (Open Graph), 1200×630 |
 | `.nojekyll` | Oprește procesarea Jekyll pe GitHub Pages |
+| `manifest.json` | Numele, culorile și iconițele pentru ecranul principal al telefonului |
+| `icon-180.png`, `icon-192.png`, `icon-512.png` | Iconițele pentru ecranul principal |
 | `supabase.sql` | Tabelele și regulile contorului comun. Se rulează o singură dată în Supabase |
 
 ## Rulare locală
@@ -47,6 +49,12 @@ select public.mission_reset('its-your-turn-1000');
 ```
 
 Comanda șterge toate bifările din baza de date și nu se poate anula. Progresul personal de pe telefoane rămâne, dar cărțile deja bifate nu se mai numără în noua rundă. Se numără doar provocările bifate după resetare. Telefoanele deschise văd noul total în cel mult 15 secunde.
+
+## Butonul „Salvează pe ecranul principal”
+
+Pe Android deschide fereastra de instalare a browserului, dacă browserul o oferă. Altfel, și mereu pe iPhone, arată pașii de urmat. Butonul nu apare dacă site-ul e deja deschis de pe ecranul principal sau pe desktop.
+
+Pe iPhone, versiunea de pe ecranul principal poate avea altă memorie decât Safari, deci alt progres și alt cod anonim. De aceea e bine ca participanții să o adauge înainte de prima carte.
 
 ## Publicare
 
