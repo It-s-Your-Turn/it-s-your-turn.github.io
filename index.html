@@ -196,6 +196,47 @@ dialog .actions{margin-top:16px}
 #unlocked .eyebrow{font-size:12px;letter-spacing:.3em;color:var(--c)}
 #unlocked .emblem{width:96px;height:96px;margin:18px auto;font-size:46px}
 
+/* ---------- Shop + cart ---------- */
+.open-shop{margin-top:10px;width:100%}
+.items{display:grid;gap:16px;align-items:start}
+.item{background:var(--navy);border:1px solid var(--rule);border-radius:22px;overflow:hidden}
+.item-img{display:block;width:100%;height:auto;aspect-ratio:4/3;padding:10px;object-fit:contain;background:#fdfdfd}
+.item-body{display:grid;gap:14px;padding:18px 16px}
+.item-name{margin:0;font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:28px;line-height:1.1}
+.item-desc{margin:4px 0 0;font-size:15px;line-height:1.4;color:var(--mist)}
+.item-price{margin:8px 0 0;font-family:var(--label);font-weight:600;letter-spacing:.08em;font-size:17px}
+.item-label{display:block;margin:0 0 8px;padding:0;font-family:var(--label);font-weight:500;text-transform:uppercase;letter-spacing:.18em;font-size:12px;color:var(--mist)}
+.sizes{margin:0;padding:0;border:0;min-width:0}
+.size-opts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.size-opts label{position:relative;display:grid;place-items:center;min-height:44px;border:1px solid var(--rule-hi);border-radius:12px;font-family:var(--label);font-weight:500;font-size:14px;cursor:pointer}
+.size-opts input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.size-opts label:has(input:checked){background:var(--c);border-color:var(--c);color:var(--ink);font-weight:600}
+.size-opts label:has(input:focus-visible){outline:2.5px solid var(--paper);outline-offset:2px}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--rule-hi);border-radius:999px}
+.qty button{width:44px;height:44px;background:none;border:0;border-radius:50%;font-size:22px;line-height:1;cursor:pointer}
+.qty output{min-width:30px;text-align:center;font-family:var(--label);font-weight:600;font-size:16px}
+.item-msg{margin:0;min-height:1.4em;font-size:15px;line-height:1.4;color:var(--mist)}
+.item-msg.err,.form-msg{color:var(--speak)}
+.shop-bar{position:sticky;bottom:0;z-index:2;margin-top:8px;padding-block:20px 12px;background:linear-gradient(transparent,var(--ink) 34%)}
+.shop-bar .btn{width:100%;background:var(--paper)}
+.lines{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.line{display:grid;grid-template-columns:64px minmax(0,1fr);gap:8px 12px;padding:12px;background:var(--navy);border:1px solid var(--rule);border-radius:18px}
+.line img{width:64px;height:64px;padding:3px;object-fit:contain;background:#fdfdfd;border-radius:10px}
+.line-name{margin:0;font-family:var(--label);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:16px;line-height:1.3}
+.line-meta{margin:2px 0 0;font-size:15px;color:var(--mist)}
+.line-ctl{grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.line-rm{min-height:44px;padding:0 6px;background:none;border:0;font-size:15px;color:var(--mist);text-decoration:underline;cursor:pointer}
+.cart-total{display:flex;justify-content:space-between;margin:14px 2px 0;font-family:var(--label);font-weight:600;letter-spacing:.08em;font-size:17px}
+.order-form{display:grid;gap:14px;margin-top:24px}
+.field label{display:block;margin-bottom:6px;font-size:15px;color:var(--mist)}
+.field input{width:100%;min-height:50px;padding:10px 14px;background:var(--navy);color:var(--paper);border:1px solid var(--rule-hi);border-radius:14px;font:inherit;font-size:17px}
+.field input[aria-invalid="true"]{border-color:var(--speak)}
+.form-msg{margin:0;font-size:15px;line-height:1.4}
+.order-form .fine{margin:0}
+.cart-empty,.order-done{display:grid;gap:14px;text-align:center}
+.cart-empty p,.order-done p{margin:0;color:var(--mist)}
+.order-done h3{margin:0;font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:34px;line-height:1.1}
+
 @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.55);opacity:.5}}
 @keyframes deal{from{transform:translateY(26px) rotate(-3deg);opacity:0}to{transform:none;opacity:1}}
 .view.deal .card{animation:deal .55s cubic-bezier(.2,.8,.2,1) both}
@@ -205,6 +246,8 @@ dialog .actions{margin-top:16px}
   .home .intro{position:sticky;top:32px}
   .home .deck{margin-top:0}
   .home .sign{grid-column:1 / -1}
+  #shop{max-width:920px}
+  .items{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (prefers-reduced-motion:reduce){
   .flipper,.stamp,.domain,.btn{transition:none}
@@ -242,6 +285,7 @@ dialog .actions{margin-top:16px}
     <h2 id="deck-title" class="section-label">Alege un domeniu</h2>
     <ul class="domains" id="domains"></ul>
     <button type="button" class="btn btn-ghost open-progress" id="open-progress"></button>
+    <button type="button" class="btn btn-ghost open-shop" id="open-shop"></button>
     <button type="button" class="btn btn-ghost install" id="install-open" hidden>Salvează pe ecranul principal</button>
   </section>
 
@@ -322,6 +366,50 @@ dialog .actions{margin-top:16px}
     <div class="domain-stats" id="domain-stats"></div>
     <p class="fine">Numerele vin din ce bifează fiecare, pe încredere. Pentru numărătoare, telefonul primește un cod anonim, fără nume și fără număr de telefon. O provocare se numără o singură dată pentru fiecare cod.</p>
   </section>
+</main>
+
+<main id="shop" class="wrap" hidden>
+  <nav class="topbar">
+    <button type="button" class="back" id="shop-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Domenii</button>
+  </nav>
+  <h2 class="p-title">Magazin</h2>
+  <div class="items" id="items"></div>
+  <div class="shop-bar">
+    <button type="button" class="btn btn-primary" id="see-cart"></button>
+  </div>
+</main>
+
+<main id="cart" class="wrap" hidden>
+  <nav class="topbar">
+    <button type="button" class="back" id="cart-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Magazin</button>
+  </nav>
+  <h2 class="p-title" id="cart-title">Coșul meu</h2>
+  <div class="cart-empty" id="cart-empty" hidden>
+    <p>Coșul e gol.</p>
+    <button type="button" class="btn btn-ghost" id="cart-shop">Vezi produsele</button>
+  </div>
+  <div class="order-done" id="order-done" hidden>
+    <h3 id="order-no" tabindex="-1"></h3>
+    <p id="order-msg"></p>
+    <button type="button" class="btn btn-ghost" id="order-shop">Înapoi la magazin</button>
+  </div>
+  <div id="cart-full" hidden>
+    <ul class="lines" id="lines"></ul>
+    <p class="cart-total" id="cart-total" hidden></p>
+    <form class="order-form" id="order-form" novalidate>
+      <div class="field">
+        <label for="order-name">Nume și prenume</label>
+        <input id="order-name" type="text" autocomplete="name" maxlength="80" required>
+      </div>
+      <div class="field">
+        <label for="order-phone">Număr de telefon</label>
+        <input id="order-phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="25" required>
+      </div>
+      <p class="form-msg" id="order-err" role="alert" hidden></p>
+      <button type="submit" class="btn btn-primary" id="order-buy">Cumpără</button>
+      <p class="fine">Plata nu se face pe site. Te contactăm la numărul acesta ca să confirmăm comanda. Folosim numele și numărul doar pentru comandă și nu le legăm de progresul tău.</p>
+    </form>
+  </div>
 </main>
 
 <dialog id="confirm" aria-labelledby="confirm-title">
@@ -455,6 +543,7 @@ function renderHome() {
     </button></li>`;
   }).join('');
   $('#open-progress').textContent = `Progresul meu · ${doneTotal()} din 25`;
+  $('#open-shop').textContent = cartCount() ? `Magazin · ${cartCount()} în coș` : 'Magazin';
   renderCommunity();
 }
 
@@ -658,11 +747,13 @@ function goHome() {
   current = null;
   renderHome();
   const fromProgress = !$('#progress').hidden;
+  const fromShop = !$('#shop').hidden;
   $('#view').hidden = true;
   $('#progress').hidden = true;
+  $('#shop').hidden = true;
   $('#home').hidden = false;
   window.scrollTo(0, 0);
-  const row = fromProgress ? $('#open-progress') : was && document.querySelector(`.domain[data-id="${was}"]`);
+  const row = fromProgress ? $('#open-progress') : fromShop ? $('#open-shop') : was && document.querySelector(`.domain[data-id="${was}"]`);
   if (row) row.focus({ preventScroll: true });
 }
 
@@ -850,14 +941,243 @@ $('#unlocked-dl').addEventListener('click', () => downloadBadge(unlockedBadge));
 $('#unlocked-close').addEventListener('click', () => $('#unlocked').close());
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape' || document.querySelector('dialog[open]')) return;
-  if (current || !$('#progress').hidden) goHome();
+  if (!$('#cart').hidden) openShop();
+  else if (current || !$('#progress').hidden || !$('#shop').hidden) goHome();
 });
 
+// Shop. Orders go to Supabase and payment happens in person, so nothing here handles money (see README).
+// price is display only, in lei; null hides it. A new item also needs a row in store_products.
+const SHOP_ITEMS = [
+  { id: 'be-the-light', name: 'Be the Light', desc: 'Bluză crem, cu mesajul „be the light” (Matthew 5:14) pe piept și sigla Companion pe mânecă.', img: 'store/be-the-light.jpeg', alt: 'Bluză crem cu textul „be the light, Matthew 5:14”', price: 120 },
+  { id: 'faith-mountains', name: 'Faith Can Move Mountains', desc: 'Hanorac bleumarin cu glugă, cu sigla Companion în față și mesajul „Faith can move mountains” pe spate.', img: 'store/faith-mountains.jpeg', alt: 'Hanorac bleumarin cu glugă, văzut din față și din spate, cu textul „Faith can move mountains”', price: 120 }
+];
+const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const MAX_QTY = 20; // Same limit as store_place_order.
+const itemById = Object.fromEntries(SHOP_ITEMS.map(i => [i.id, i]));
+const lei = n => `${fmt(n)} lei`;
+
+// Separate from KEY, so the cart can never affect saved progress. Name and phone are not kept on the phone.
+const CART_KEY = 'its-your-turn-cart-v1';
+function loadCart() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+    return Array.isArray(saved) ? saved.filter(l => l && itemById[l.item] && SIZES.includes(l.size) && Number.isInteger(l.qty) && l.qty >= 1 && l.qty <= MAX_QTY) : [];
+  } catch (e) { return []; }
+}
+const cart = loadCart();
+function saveCart() {
+  try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {}
+}
+function cartCount() { return cart.reduce((n, l) => n + l.qty, 0); }
+
+const qtyHtml = (n, label) => `<div class="qty" role="group" aria-label="${label}">
+  <button type="button" data-step="-1" aria-label="Mai puțin">−</button>
+  <output>${n}</output>
+  <button type="button" data-step="1" aria-label="Mai mult">+</button>
+</div>`;
+
+function renderShop() {
+  $('#items').innerHTML = SHOP_ITEMS.map(i => `<article class="item" data-item="${i.id}">
+    <img class="item-img" src="${i.img}" alt="${i.alt}" width="600" height="450" loading="lazy">
+    <div class="item-body">
+      <div>
+        <h3 class="item-name">${i.name}</h3>
+        <p class="item-desc">${i.desc}</p>
+        ${i.price != null ? `<p class="item-price">${lei(i.price)}</p>` : ''}
+      </div>
+      <fieldset class="sizes">
+        <legend class="item-label">Mărime</legend>
+        <div class="size-opts">${SIZES.map(s => `<label><input type="radio" name="size-${i.id}" value="${s}">${s}</label>`).join('')}</div>
+      </fieldset>
+      <div>
+        <span class="item-label">Cantitate</span>
+        ${qtyHtml(1, `Cantitate pentru ${i.name}`)}
+      </div>
+      <button type="button" class="btn btn-primary" data-add>Adaugă în coș</button>
+      <p class="item-msg" aria-live="polite"></p>
+    </div>
+  </article>`).join('');
+}
+
+function renderSeeCart() {
+  $('#see-cart').textContent = `Vezi coșul · ${cartCount()}`;
+}
+
+function addToCart(box) {
+  const msg = box.querySelector('.item-msg');
+  const size = box.querySelector('input:checked');
+  msg.classList.toggle('err', !size);
+  if (!size) { msg.textContent = 'Alege o mărime.'; return; }
+  const output = box.querySelector('output');
+  const qty = Number(output.textContent);
+  const line = cart.find(l => l.item === box.dataset.item && l.size === size.value);
+  const total = Math.min(MAX_QTY, (line ? line.qty : 0) + qty);
+  if (line) line.qty = total;
+  else cart.push({ item: box.dataset.item, size: size.value, qty: total });
+  saveCart();
+  renderSeeCart();
+  output.textContent = 1;
+  msg.textContent = `În coș: mărimea ${size.value}, ${total} ${total === 1 ? 'bucată' : 'bucăți'}.`;
+}
+
+// Set after a successful order: the cart view shows the confirmation until the buyer leaves it.
+let placedOrder = null;
+
+function renderCart() {
+  const empty = !cart.length;
+  $('#cart-title').textContent = placedOrder ? 'Comandă trimisă' : 'Coșul meu';
+  $('#order-done').hidden = !placedOrder;
+  $('#cart-empty').hidden = !empty || !!placedOrder;
+  $('#cart-full').hidden = empty;
+  if (placedOrder) {
+    $('#order-no').textContent = `Comanda #${placedOrder.no}`;
+    $('#order-msg').textContent = `Mulțumim! Te contactăm la ${placedOrder.phone} ca să confirmăm comanda.`;
+  }
+  $('#lines').innerHTML = cart.map((l, n) => {
+    const i = itemById[l.item];
+    return `<li class="line" data-line="${n}">
+      <img src="${i.img}" alt="" width="64" height="64">
+      <div>
+        <p class="line-name">${i.name}</p>
+        <p class="line-meta">Mărimea ${l.size}${i.price != null ? ` · ${lei(i.price)}` : ''}</p>
+      </div>
+      <div class="line-ctl">
+        ${qtyHtml(l.qty, `Cantitate pentru ${i.name}, mărimea ${l.size}`)}
+        <button type="button" class="line-rm" data-remove>Scoate din coș</button>
+      </div>
+    </li>`;
+  }).join('');
+  // A total only makes sense once every item in the cart has a price.
+  const priced = cart.every(l => itemById[l.item].price != null);
+  $('#cart-total').hidden = empty || !priced;
+  if (!empty && priced) $('#cart-total').innerHTML = `<span>Total</span><span>${lei(cart.reduce((n, l) => n + l.qty * itemById[l.item].price, 0))}</span>`;
+}
+
+function openShop() {
+  placedOrder = null;
+  renderSeeCart();
+  $('#home').hidden = true;
+  $('#cart').hidden = true;
+  $('#shop').hidden = false;
+  window.scrollTo(0, 0);
+  $('#shop-back').focus({ preventScroll: true });
+}
+
+function openCart() {
+  renderCart();
+  $('#home').hidden = true;
+  $('#shop').hidden = true;
+  $('#cart').hidden = false;
+  window.scrollTo(0, 0);
+  $('#cart-back').focus({ preventScroll: true });
+}
+
+const validName = s => s.length >= 2;
+const validPhone = s => /^\+?[0-9 ().-]+$/.test(s) && /^\d{9,15}$/.test(s.replace(/\D/g, ''));
+function orderError(text, input) {
+  const err = $('#order-err');
+  err.textContent = text;
+  keepHyphens(err);
+  err.hidden = !text;
+  $('#order-name').setAttribute('aria-invalid', input === $('#order-name'));
+  $('#order-phone').setAttribute('aria-invalid', input === $('#order-phone'));
+  if (input) input.focus();
+}
+
+const newRef = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
+let connecting = null;
+let pendingOrder = null;
+let sendingOrder = false;
+
+async function sendOrder(name, phone) {
+  // Same details keep the same ref: a retry after a lost response can't create a second order.
+  const items = cart.map(({ item, size, qty }) => ({ item, size, qty }));
+  const key = JSON.stringify([name, phone, items]);
+  if (!pendingOrder || pendingOrder.key !== key) pendingOrder = { key, ref: newRef() };
+  await connecting;
+  if (!supa) await (connecting = connectCommunity());
+  if (!supa) throw new Error('Supabase unavailable');
+  const { data, error } = await supa.rpc('store_place_order', { p_ref: pendingOrder.ref, p_name: name, p_phone: phone, p_items: items });
+  if (error) throw error;
+  return data.order_no;
+}
+
+async function placeOrder(e) {
+  e.preventDefault();
+  if (sendingOrder || !cart.length) return;
+  const name = $('#order-name').value.trim();
+  const phone = $('#order-phone').value.trim();
+  if (!validName(name)) return orderError('Scrie numele tău.', $('#order-name'));
+  if (!validPhone(phone)) return orderError('Scrie un număr de telefon valid, de exemplu 0722 123 456.', $('#order-phone'));
+  orderError('');
+  sendingOrder = true;
+  const buy = $('#order-buy');
+  buy.disabled = true;
+  buy.textContent = 'Se trimite…';
+  try {
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Order timed out')), 20000));
+    const no = await Promise.race([sendOrder(name, phone), timeout]);
+    cart.length = 0;
+    saveCart();
+    pendingOrder = null;
+    placedOrder = { no, phone };
+    $('#order-form').reset();
+    renderCart();
+    window.scrollTo(0, 0);
+    $('#order-no').focus({ preventScroll: true });
+    announce(`Comanda ${no} a fost trimisă.`);
+  } catch (err) {
+    console.warn(err);
+    orderError('Comanda nu a ajuns la noi. Verifică internetul și încearcă din nou. Coșul rămâne salvat.');
+  }
+  sendingOrder = false;
+  buy.disabled = false;
+  buy.textContent = 'Cumpără';
+}
+
+$('#open-shop').addEventListener('click', openShop);
+$('#shop-back').addEventListener('click', goHome);
+$('#see-cart').addEventListener('click', openCart);
+$('#cart-back').addEventListener('click', openShop);
+$('#cart-shop').addEventListener('click', openShop);
+$('#order-shop').addEventListener('click', openShop);
+$('#order-form').addEventListener('submit', placeOrder);
+$('#items').addEventListener('click', e => {
+  const box = e.target.closest('.item');
+  if (!box) return;
+  const step = e.target.closest('[data-step]');
+  if (step) {
+    const output = box.querySelector('output');
+    output.textContent = Math.min(MAX_QTY, Math.max(1, Number(output.textContent) + Number(step.dataset.step)));
+  } else if (e.target.closest('[data-add]')) addToCart(box);
+});
+$('#items').addEventListener('change', e => {
+  const msg = e.target.closest('.item').querySelector('.item-msg');
+  msg.textContent = '';
+  msg.classList.remove('err');
+});
+$('#lines').addEventListener('click', e => {
+  const row = e.target.closest('.line');
+  if (!row) return;
+  const n = Number(row.dataset.line);
+  const step = e.target.closest('[data-step]');
+  if (e.target.closest('[data-remove]')) cart.splice(n, 1);
+  else if (step) cart[n].qty = Math.min(MAX_QTY, Math.max(1, cart[n].qty + Number(step.dataset.step)));
+  else return;
+  saveCart();
+  renderCart();
+  if (cart.length) (step ? document.querySelector(`.line[data-line="${n}"] [data-step="${step.dataset.step}"]`) : $('#order-name')).focus({ preventScroll: true });
+  else $('#cart-shop').focus({ preventScroll: true });
+});
+
+renderShop();
 renderHome();
 const fromLink = location.hash.slice(1);
 if (byId[fromLink]) openDomain(fromLink, false);
 else if (fromLink === 'progres') openProgress();
-connectCommunity();
+else if (fromLink === 'magazin') openShop();
+else if (fromLink === 'cos') openCart();
+connecting = connectCommunity();
 </script>
 </body>
 </html>
