@@ -140,6 +140,18 @@ button{font:inherit;color:inherit}
 .btn-ghost:hover{border-color:var(--paper)}
 .tip{margin:2px 0 0;font-size:14px;line-height:1.45;color:var(--mist);text-wrap:balance}
 
+/* ---------- Collective counter ---------- */
+.community{margin-top:20px;padding:18px;background:var(--navy);border:1px solid var(--rule);border-radius:18px}
+.c-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 12px}
+.c-title{margin:0;font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:14px;color:var(--mist)}
+.c-count{font-family:var(--display);font-size:30px;line-height:1.1;white-space:nowrap}
+.c-count small{font-family:var(--label);font-size:14px;color:var(--mist)}
+.community .track{margin-top:10px}
+.c-msg{margin:10px 0 0;font-size:15px;line-height:1.4;color:var(--mist)}
+.domain-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;text-align:center}
+.domain-stats strong{display:block;font-family:var(--display);font-weight:400;font-size:22px;line-height:1.2;color:var(--c)}
+.domain-stats small{display:block;font-family:var(--label);font-size:10px;letter-spacing:.02em;text-transform:uppercase;color:var(--mist);overflow-wrap:anywhere}
+
 /* ---------- Progress view ---------- */
 .open-progress{margin-top:18px;width:100%}
 .p-title{margin:8px 0 18px;text-align:center;font-family:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.3em;padding-left:.3em;font-size:17px}
@@ -206,6 +218,14 @@ dialog .actions{margin-top:16px}
       </div>
     </header>
     <p class="lede">Fiecare domeniu are 5 cărți cu provocări. Alege unul, trage o carte și <strong>ai o săptămână</strong> să faci ce scrie pe ea.</p>
+    <section class="community" id="community" aria-labelledby="c-title">
+      <div class="c-head">
+        <h2 class="c-title" id="c-title">1.000 de fapte de iubire</h2>
+        <span class="c-count" id="c-count"></span>
+      </div>
+      <div class="track"><i id="c-bar"></i></div>
+      <p class="c-msg" id="c-msg"></p>
+    </section>
   </div>
 
   <section class="deck" aria-labelledby="deck-title">
@@ -285,6 +305,11 @@ dialog .actions{margin-top:16px}
     <h3 id="badges-title" class="section-label">Insignele mele</h3>
     <div class="badges" id="badges"></div>
     <p class="fine">Insignele arată ce ai bifat tu. Nu ți se cer poze și nici date despre oamenii pe care i-ai ajutat.</p>
+  </section>
+  <section class="p-section" id="p-community" aria-labelledby="pc-title">
+    <h3 id="pc-title" class="section-label">Împreună</h3>
+    <div class="domain-stats" id="domain-stats"></div>
+    <p class="fine">Numerele vin din ce bifează fiecare, pe încredere. Pentru numărătoare, telefonul primește un cod anonim, fără nume și fără număr de telefon. O provocare se numără o singură dată pentru fiecare cod.</p>
   </section>
 </main>
 
@@ -377,11 +402,11 @@ const $ = s => document.querySelector(s);
 
 // Per-phone memory of the drawn card and the ones marked done.
 const KEY = 'its-your-turn-compa-v1';
-let store = { cur: {}, done: {} };
+let store = { cur: {}, done: {}, undo: [], skip: [] };
 let canSave = false;
 try {
   const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-  if (saved && typeof saved === 'object') store = { cur: saved.cur || {}, done: saved.done || {} };
+  if (saved && typeof saved === 'object') store = { cur: saved.cur || {}, done: saved.done || {}, undo: saved.undo || [], skip: saved.skip || [], round: saved.round };
   localStorage.setItem(KEY + ':probe', '1');
   localStorage.removeItem(KEY + ':probe');
   canSave = true;
@@ -410,6 +435,105 @@ function renderHome() {
     </button></li>`;
   }).join('');
   $('#open-progress').textContent = `Progresul meu · ${doneTotal()} din 25`;
+  renderCommunity();
+}
+
+// Collective goal. Shows a dash instead of a number until the server has answered (see README).
+const COMMUNITY = { supabaseUrl: 'https://xdfemuddjuxhptwpiosa.supabase.co', supabaseKey: 'sb_publishable_k_g_k9ZBj9ojy2eua9PfpQ_gPdUyiPK', campaign: 'its-your-turn-1000', goal: 1000 };
+const SUPABASE_JS = {
+  src: 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js',
+  integrity: 'sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP'
+};
+let communityLive = false;
+let communityTotal = null;
+let communityByDomain = {};
+let supa = null;
+let syncing = false;
+let syncAgain = false;
+
+const fmt = n => n.toLocaleString('ro-RO');
+const doneKeys = () => DOMAINS.flatMap(d => doneOf(d.id).map(i => `${d.id}-${i}`));
+
+function renderCommunity() {
+  const known = communityTotal != null;
+  const total = Math.min(COMMUNITY.goal, communityTotal || 0);
+  const left = COMMUNITY.goal - total;
+  $('#c-count').innerHTML = `${known ? fmt(total) : '–'} <small>/ ${fmt(COMMUNITY.goal)}</small>`;
+  $('#c-bar').style.width = `${total / COMMUNITY.goal * 100}%`;
+  $('#c-msg').textContent = !known ? 'Numărul comun nu e disponibil acum.' : left ? `Mai avem ${fmt(left)} până la ${fmt(COMMUNITY.goal)}.` : `Am ajuns la ${fmt(COMMUNITY.goal)} de fapte de iubire. Mulțumim!`;
+  $('#domain-stats').innerHTML = DOMAINS.map(d => {
+    const n = Number(communityByDomain[d.id]) || 0;
+    return `<div style="--c:var(--${d.id})"><strong>${known ? fmt(n) : '–'}</strong><small>${d.name}</small></div>`;
+  }).join('');
+}
+
+async function rpc(fn, args) {
+  const { data, error } = await supa.rpc(fn, { p_campaign: COMMUNITY.campaign, ...args });
+  if (error) throw error;
+  return data;
+}
+
+// The phone stays the source of truth for personal progress: this only sends what the server is missing,
+// so a failed call is retried on the next round and the cards keep working without a connection.
+async function syncCommunity() {
+  if (!communityLive) return;
+  if (syncing) { syncAgain = true; return; }
+  syncing = true;
+  try {
+    let snap = await rpc('mission_snapshot');
+    if (snap.round !== store.round) {
+      // A phone's first sync sends its existing cards. After a manual counter reset they stay out of the new total.
+      if (store.round != null) { store.skip = doneKeys(); store.undo = []; }
+      store.round = snap.round;
+      save();
+    }
+    if (snap.total < COMMUNITY.goal) {
+      const missing = doneKeys().filter(k => !snap.completed.includes(k) && !store.skip.includes(k));
+      for (const k of missing) await rpc('mission_complete', { p_challenge: k });
+      const undos = [...store.undo];
+      for (const k of undos) {
+        await rpc('mission_undo', { p_challenge: k });
+        store.undo = store.undo.filter(x => x !== k);
+        save();
+      }
+      if (missing.length || undos.length) snap = await rpc('mission_snapshot');
+    }
+    communityTotal = Number(snap.total) || 0;
+    communityByDomain = snap.by_category || {};
+    renderCommunity();
+  } catch (e) { console.warn(e); }
+  syncing = false;
+  if (syncAgain) { syncAgain = false; syncCommunity(); }
+}
+
+function loadSupabase() {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = SUPABASE_JS.src;
+    s.integrity = SUPABASE_JS.integrity;
+    s.crossOrigin = 'anonymous';
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('Supabase script failed to load'));
+    document.head.appendChild(s);
+  });
+}
+
+async function connectCommunity() {
+  if (!COMMUNITY.supabaseUrl || !COMMUNITY.supabaseKey) return;
+  try {
+    await loadSupabase();
+    supa = window.supabase.createClient(COMMUNITY.supabaseUrl, COMMUNITY.supabaseKey);
+    const { data, error } = await supa.auth.getSession();
+    if (error) throw error;
+    if (!data.session) {
+      const res = await supa.auth.signInAnonymously();
+      if (res.error) throw res.error;
+    }
+    communityLive = true;
+    await syncCommunity();
+    setInterval(() => { if (!document.hidden) syncCommunity(); }, 15000);
+    addEventListener('online', syncCommunity);
+  } catch (e) { console.warn(e); }
 }
 
 function renderProgress() {
@@ -603,7 +727,9 @@ function markDone() {
   const before = doneTotal();
   const done = doneOf(current);
   if (!done.includes(store.cur[current])) done.push(store.cur[current]);
+  store.undo = store.undo.filter(k => k !== `${current}-${store.cur[current]}`);
   save();
+  syncCommunity();
   $('#confirm').close();
   setState('done');
   announce('Ai bifat provocarea.');
@@ -622,7 +748,9 @@ const ACT = {
   },
   undo() {
     store.done[current] = doneOf(current).filter(i => i !== store.cur[current]);
+    store.undo.push(`${current}-${store.cur[current]}`);
     save();
+    syncCommunity();
     setState('up');
     $('#actions .btn-primary').focus({ preventScroll: true });
   },
@@ -632,6 +760,7 @@ const ACT = {
     if (doneOf(current).length >= 5) { fillComplete(); setState('complete'); $('#actions .btn-primary').focus({ preventScroll: true }); }
     else { setState('down'); $('#flip').focus({ preventScroll: true }); }
   },
+  // Only clears the personal cards: acts already done stay in the collective total.
   reset() {
     store.done[current] = [];
     delete store.cur[current];
@@ -672,6 +801,7 @@ renderHome();
 const fromLink = location.hash.slice(1);
 if (byId[fromLink]) openDomain(fromLink, false);
 else if (fromLink === 'progres') openProgress();
+connectCommunity();
 </script>
 </body>
 </html>

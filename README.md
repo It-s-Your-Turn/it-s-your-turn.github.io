@@ -7,13 +7,14 @@ Pagină web pentru telefon, pentru adolescenții de la Festival Compa. Alegi unu
 
 ## Structură
 
-Nu există build, framework sau dependențe. Totul e într-un singur fișier.
+Nu există build sau framework. Toată pagina e într-un singur fișier. Singura dependență e clientul Supabase pentru contorul comun, încărcat doar după ce contorul e configurat.
 
 | Fișier | Ce e |
 |---|---|
 | `index.html` | Toată pagina: HTML, CSS și JavaScript inline |
 | `share.png` | Imaginea de previzualizare la share (Open Graph), 1200×630 |
 | `.nojekyll` | Oprește procesarea Jekyll pe GitHub Pages |
+| `supabase.sql` | Tabelele și regulile contorului comun. Se rulează o singură dată în Supabase |
 
 ## Rulare locală
 
@@ -22,6 +23,30 @@ python3 -m http.server 8000
 ```
 
 Apoi deschide http://localhost:8000 pe telefon sau în modul mobil al browserului.
+
+## Contorul comun („1.000 de fapte de iubire”)
+
+Cât timp valorile Supabase din `COMMUNITY` (în `index.html`) sunt goale, contorul apare pe pagină fără număr („– / 1.000”).
+
+Pentru activare:
+
+1. Creează un proiect Supabase.
+2. Activează **Anonymous Sign-ins** la Authentication > Providers.
+3. Rulează `supabase.sql` în SQL Editor.
+4. Completează `supabaseUrl` și `supabaseKey` în `COMMUNITY`, cu cheia publică (publishable/anon). Nu pune niciodată cheia `service_role` în site.
+5. Verifică limita de autentificări anonime pe IP la Authentication > Rate Limits. La festival, mulți participanți pot ieși pe același IP.
+
+Fiecare telefon primește un cod anonim, iar o provocare se numără o singură dată pentru fiecare cod. Bifările sunt pe încredere, nu dovezi: cine își șterge datele din browser primește un cod nou. Progresul personal rămâne pe telefon, iar site-ul trimite la server doar ce lipsește. Dacă serverul nu răspunde, contorul rămâne la ultimul număr primit sau fără număr, iar cărțile merg în continuare. „Scoate bifa” scade din total, „Ia-o de la capăt” nu. După 1.000 contorul se oprește, dar progresul personal continuă.
+
+### Resetarea contorului
+
+Contorul se pune la zero doar din Supabase, nu din site. În SQL Editor, rulează:
+
+```sql
+select public.mission_reset('its-your-turn-1000');
+```
+
+Comanda șterge toate bifările din baza de date și nu se poate anula. Progresul personal de pe telefoane rămâne, dar cărțile deja bifate nu se mai numără în noua rundă. Se numără doar provocările bifate după resetare. Telefoanele deschise văd noul total în cel mult 15 secunde.
 
 ## Publicare
 
@@ -36,7 +61,7 @@ Site-ul e servit de GitHub Pages din ramura `main`, rădăcina repo-ului. Orice 
 - **`BADGES`**: insignele, cu numele, pragul (`min`, din totalul de 25 de provocări), simbolul și culoarea.
 - **`XP`**: câte puncte primește utilizatorul pentru fiecare provocare făcută. Textul de pe butonul din fereastra de confirmare (`#confirm-ok`) se schimbă separat.
 - **`KEY`**: cheia din `localStorage` unde se salvează progresul utilizatorului (`its-your-turn-compa-v1`). Dacă se schimbă structura datelor salvate, cheia trebuie mărită la `v2`, altfel utilizatorii vechi pot avea date incompatibile.
-- Funcțiile principale: `renderHome`, `openDomain`, `draw`, `fillChallenge`, `fillComplete`, `goHome`, `markDone`, `renderProgress`, `openProgress`, `showUnlocked`, `downloadBadge`.
+- Funcțiile principale: `renderHome`, `openDomain`, `draw`, `fillChallenge`, `fillComplete`, `goHome`, `markDone`, `renderProgress`, `openProgress`, `showUnlocked`, `downloadBadge`, `renderCommunity`, `syncCommunity`, `connectCommunity`.
 
 ## Identitate vizuală
 
