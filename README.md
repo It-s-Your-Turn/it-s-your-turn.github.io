@@ -100,6 +100,10 @@ Pe Android deschide fereastra de instalare a browserului, dacă browserul o ofer
 
 Pe iPhone, versiunea de pe ecranul principal poate avea altă memorie decât Safari, deci alt progres și alt cod anonim. De aceea e bine ca participanții să o adauge înainte de prima carte.
 
+## Butonul „Înapoi”
+
+Fiecare pagină are o adresă proprie (`#see`, `#progres`, `#magazin`, `#cos`, iar prima pagină n-are nimic după `#`) și o intrare în istoricul browserului. Înapoi de pe telefon și butoanele de pe pagină fac același lucru. O pagină nouă se deschide cu `navigate`, butoanele de pe pagină merg înapoi cu `goUp`, iar `showRoute` afișează pagina potrivită pentru adresa curentă. O pagină nouă trebuie adăugată în `showRoute` și `showOnly`.
+
 ## Publicare
 
 Site-ul e servit de GitHub Pages din ramura `main`, rădăcina repo-ului. Orice push pe `main` ajunge live în 1–2 minute.

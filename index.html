@@ -278,7 +278,7 @@ dialog .actions{margin-top:16px}
         </section>
       </div>
     </header>
-    <p class="lede">Fiecare domeniu are 5 cărți cu provocări. Alege unul, trage o carte și <strong>ai o săptămână</strong> să faci ce scrie pe ea.</p>
+    <p class="lede">Fiecare domeniu are 5 cărți cu provocări. Alege unul, trage o carte și <strong>ai o săptămână</strong> la dispoziție să îndeplinești provocarea.</p>
   </div>
 
   <section class="deck" aria-labelledby="deck-title">
@@ -453,7 +453,7 @@ const DOMAINS = [
     'Gândește-te la o persoană în vârstă care are nevoie de ajutor. Fă-i o vizită sau ajut-o cu ceva practic.',
     'Renunță la o parte din timpul tău liber ca să faci un bine cuiva care are nevoie de tine.'
   ]},
-  { id: 'see', name: 'See', motto: 'Privește-i pe oameni cu ochii lui Isus.', items: [
+  { id: 'see', name: 'See', motto: 'Privește oamenii prin ochii lui Isus.', items: [
     'Observă pe cineva care e deseori ignorat sau lăsat deoparte. Arată-i că și el contează.',
     'La următoarea întâlnire de tineret, caută persoana care stă singură. Du-te la ea și intră în vorbă.',
     'Fii atent la un coleg care pare mai retras decât de obicei. Întreabă-l sincer dacă e bine.',
@@ -467,7 +467,7 @@ const DOMAINS = [
     'Încurajează un coleg care a luat o notă mică sau a dat greș la ceva. Spune-i că asta nu schimbă cât valorează el.',
     'Spune-i sincer cuiva trei lucruri pe care le apreciezi la el. Alege pe cineva care aude rar o vorbă bună.'
   ]},
-  { id: 'speak', name: 'Speak', motto: 'Ai curajul să vorbești despre Isus.', items: [
+  { id: 'speak', name: 'Speak', motto: 'Ai curaj să vorbești despre Isus.', items: [
     'Trimite-i unui prieten un verset din Biblie care te-a încurajat. Spune-i și de ce contează pentru tine.',
     'Povestește-i unui coleg o întâmplare în care ai simțit că Dumnezeu te-a ajutat.',
     'Dacă te întreabă cineva de ce mergi la biserică sâmbăta, spune-i sincer ce înseamnă Sabatul pentru tine.',
@@ -670,8 +670,7 @@ function renderProgress() {
 
 function openProgress() {
   renderProgress();
-  $('#home').hidden = true;
-  $('#progress').hidden = false;
+  showOnly('progress');
   window.scrollTo(0, 0);
   $('#progress-back').focus({ preventScroll: true });
 }
@@ -734,12 +733,15 @@ function openDomain(id, animate = true) {
   void card.offsetWidth;
   card.classList.remove('no-anim');
 
-  $('#home').hidden = true;
-  view.hidden = false;
+  showOnly('view');
   window.scrollTo(0, 0);
   view.classList.remove('deal');
   if (animate) { void view.offsetWidth; view.classList.add('deal'); }
   (state === 'down' ? $('#flip') : $('#back')).focus({ preventScroll: true });
+}
+
+function showOnly(view) {
+  ['home', 'view', 'progress', 'shop', 'cart'].forEach(id => { $('#' + id).hidden = id !== view; });
 }
 
 function goHome() {
@@ -748,10 +750,7 @@ function goHome() {
   renderHome();
   const fromProgress = !$('#progress').hidden;
   const fromShop = !$('#shop').hidden;
-  $('#view').hidden = true;
-  $('#progress').hidden = true;
-  $('#shop').hidden = true;
-  $('#home').hidden = false;
+  showOnly('home');
   window.scrollTo(0, 0);
   const row = fromProgress ? $('#open-progress') : fromShop ? $('#open-shop') : was && document.querySelector(`.domain[data-id="${was}"]`);
   if (row) row.focus({ preventScroll: true });
@@ -879,15 +878,15 @@ const ACT = {
     setState('down');
     $('#flip').focus({ preventScroll: true });
   },
-  home: goHome
+  home: () => goUp()
 };
 
 $('#domains').addEventListener('click', e => {
   const row = e.target.closest('.domain');
-  if (row) openDomain(row.dataset.id);
+  if (row) navigate('#' + row.dataset.id);
 });
 $('#flip').addEventListener('click', draw);
-$('#back').addEventListener('click', goHome);
+$('#back').addEventListener('click', () => goUp());
 $('#actions').addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (b) ACT[b.dataset.act]();
@@ -928,8 +927,8 @@ $('#install-open').addEventListener('click', openInstall);
 $('#install-close').addEventListener('click', () => $('#install').close());
 renderInstall();
 
-$('#open-progress').addEventListener('click', openProgress);
-$('#progress-back').addEventListener('click', goHome);
+$('#open-progress').addEventListener('click', () => navigate('#progres'));
+$('#progress-back').addEventListener('click', () => goUp());
 $('#badges').addEventListener('click', e => {
   const b = e.target.closest('[data-badge]');
   if (b) downloadBadge(BADGES.find(x => x.id === b.dataset.badge));
@@ -941,8 +940,8 @@ $('#unlocked-dl').addEventListener('click', () => downloadBadge(unlockedBadge));
 $('#unlocked-close').addEventListener('click', () => $('#unlocked').close());
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape' || document.querySelector('dialog[open]')) return;
-  if (!$('#cart').hidden) openShop();
-  else if (current || !$('#progress').hidden || !$('#shop').hidden) goHome();
+  if (!$('#cart').hidden) goUp('#magazin');
+  else if (current || !$('#progress').hidden || !$('#shop').hidden) goUp();
 });
 
 // Shop. Orders go to Supabase and payment happens in person, so nothing here handles money (see README).
@@ -1054,20 +1053,15 @@ function renderCart() {
 }
 
 function openShop() {
-  placedOrder = null;
   renderSeeCart();
-  $('#home').hidden = true;
-  $('#cart').hidden = true;
-  $('#shop').hidden = false;
+  showOnly('shop');
   window.scrollTo(0, 0);
   $('#shop-back').focus({ preventScroll: true });
 }
 
 function openCart() {
   renderCart();
-  $('#home').hidden = true;
-  $('#shop').hidden = true;
-  $('#cart').hidden = false;
+  showOnly('cart');
   window.scrollTo(0, 0);
   $('#cart-back').focus({ preventScroll: true });
 }
@@ -1135,12 +1129,12 @@ async function placeOrder(e) {
   buy.textContent = 'Cumpără';
 }
 
-$('#open-shop').addEventListener('click', openShop);
-$('#shop-back').addEventListener('click', goHome);
-$('#see-cart').addEventListener('click', openCart);
-$('#cart-back').addEventListener('click', openShop);
-$('#cart-shop').addEventListener('click', openShop);
-$('#order-shop').addEventListener('click', openShop);
+$('#open-shop').addEventListener('click', () => navigate('#magazin'));
+$('#shop-back').addEventListener('click', () => goUp());
+$('#see-cart').addEventListener('click', () => navigate('#cos'));
+$('#cart-back').addEventListener('click', () => goUp('#magazin'));
+$('#cart-shop').addEventListener('click', () => goUp('#magazin'));
+$('#order-shop').addEventListener('click', () => goUp('#magazin'));
 $('#order-form').addEventListener('submit', placeOrder);
 $('#items').addEventListener('click', e => {
   const box = e.target.closest('.item');
@@ -1170,13 +1164,48 @@ $('#lines').addEventListener('click', e => {
   else $('#cart-shop').focus({ preventScroll: true });
 });
 
+// Each view has its own history entry, so the phone's back gesture and the on-screen buttons take the same path.
+function showRoute(animate = false) {
+  // Safari's swipe back leaves a dialog open, so it has to be closed by hand.
+  document.querySelectorAll('dialog[open]').forEach(d => d.close());
+  const route = location.hash.slice(1);
+  if (route !== 'cos') placedOrder = null;
+  if (byId[route]) return openDomain(route, animate);
+  if (route !== 'progres' && route !== 'magazin' && route !== 'cos') return goHome();
+  current = null;
+  if (route === 'progres') openProgress();
+  else if (route === 'magazin') openShop();
+  else openCart();
+}
+
+function navigate(hash) {
+  if (location.hash === hash) return;
+  history.pushState({ from: location.hash }, '', hash);
+  showRoute(true);
+}
+
+// On-screen back reuses the entry we came from. A page opened from a direct link has none, so it swaps in the parent.
+let goingBack = false;
+function goUp(hash = '') {
+  if (goingBack) return;
+  if (history.state && history.state.from === hash) {
+    goingBack = true;
+    history.back();
+    return;
+  }
+  history.replaceState(null, '', hash || location.pathname + location.search);
+  showRoute();
+}
+
+addEventListener('popstate', () => {
+  goingBack = false;
+  showRoute();
+});
+history.scrollRestoration = 'manual';
+
 renderShop();
 renderHome();
-const fromLink = location.hash.slice(1);
-if (byId[fromLink]) openDomain(fromLink, false);
-else if (fromLink === 'progres') openProgress();
-else if (fromLink === 'magazin') openShop();
-else if (fromLink === 'cos') openCart();
+showRoute();
 connecting = connectCommunity();
 </script>
 </body>
