@@ -270,7 +270,7 @@ dialog .actions{margin-top:16px}
         </div>
         <section class="community" id="community" aria-labelledby="c-title">
           <div class="c-head">
-            <h2 class="c-title" id="c-title">1.000 de fapte de iubire</h2>
+            <h2 class="c-title" id="c-title">1000 de fapte bune</h2>
             <span class="c-count" id="c-count"></span>
           </div>
           <div class="track"><i id="c-bar"></i></div>
@@ -569,7 +569,7 @@ function renderCommunity() {
   const left = COMMUNITY.goal - total;
   $('#c-count').innerHTML = `${known ? fmt(total) : '–'} <small>/ ${fmt(COMMUNITY.goal)}</small>`;
   $('#c-bar').style.width = `${total / COMMUNITY.goal * 100}%`;
-  $('#c-msg').textContent = !known ? 'Numărul comun nu e disponibil acum.' : left ? `Mai avem ${fmt(left)} până la ${fmt(COMMUNITY.goal)}.` : `Am ajuns la ${fmt(COMMUNITY.goal)} de fapte de iubire. Mulțumim!`;
+  $('#c-msg').textContent = !known ? 'Numărul comun nu e disponibil acum.' : left ? `Mai avem ${fmt(left)} până la ${fmt(COMMUNITY.goal)}.` : `Am ajuns la ${fmt(COMMUNITY.goal)} de fapte bune. Mulțumim!`;
   $('#domain-stats').innerHTML = DOMAINS.map(d => {
     const n = Number(communityByDomain[d.id]) || 0;
     return `<div style="--c:var(--${d.id})"><strong>${known ? fmt(n) : '–'}</strong><small>${d.name}</small></div>`;

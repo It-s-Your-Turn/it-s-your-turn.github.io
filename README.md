@@ -28,7 +28,7 @@ python3 -m http.server 8000
 
 Apoi deschide http://localhost:8000 pe telefon sau în modul mobil al browserului.
 
-## Contorul comun („1.000 de fapte de iubire”)
+## Contorul comun („1000 de fapte bune”)
 
 Cât timp valorile Supabase din `COMMUNITY` (în `index.html`) sunt goale, contorul apare pe pagină fără număr („– / 1.000”).
 
