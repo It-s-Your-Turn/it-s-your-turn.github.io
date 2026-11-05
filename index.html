@@ -510,11 +510,12 @@ const $ = s => document.querySelector(s);
 
 // Per-phone memory of the drawn card and the ones marked done.
 const KEY = 'its-your-turn-compa-v1';
-let store = { cur: {}, done: {}, undo: [], skip: [] };
+// `send` holds cards marked done that the server hasn't confirmed yet; only those are ever counted.
+let store = { cur: {}, done: {}, undo: [], send: [] };
 let canSave = false;
 try {
   const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-  if (saved && typeof saved === 'object') store = { cur: saved.cur || {}, done: saved.done || {}, undo: saved.undo || [], skip: saved.skip || [], round: saved.round };
+  if (saved && typeof saved === 'object') store = { cur: saved.cur || {}, done: saved.done || {}, undo: saved.undo || [], send: saved.send || [], round: saved.round };
   localStorage.setItem(KEY + ':probe', '1');
   localStorage.removeItem(KEY + ':probe');
   canSave = true;
@@ -561,7 +562,6 @@ let syncing = false;
 let syncAgain = false;
 
 const fmt = n => n.toLocaleString('ro-RO');
-const doneKeys = () => DOMAINS.flatMap(d => doneOf(d.id).map(i => `${d.id}-${i}`));
 
 function renderCommunity() {
   const known = communityTotal != null;
@@ -582,30 +582,35 @@ async function rpc(fn, args) {
   return data;
 }
 
-// The phone stays the source of truth for personal progress: this only sends what the server is missing,
-// so a failed call is retried on the next round and the cards keep working without a connection.
+// The phone keeps personal progress; the server only hears about a card when it is marked done.
+// Unsent marks wait in `send` and are retried on the next sync, so the cards keep working offline.
+// Cards done earlier are never re-sent, so after a counter reset they stay out of the new total.
 async function syncCommunity() {
   if (!communityLive) return;
   if (syncing) { syncAgain = true; return; }
   syncing = true;
   try {
     let snap = await rpc('mission_snapshot');
-    if (snap.round !== store.round) {
-      // A phone's first sync sends its existing cards. After a manual counter reset they stay out of the new total.
-      if (store.round != null) { store.skip = doneKeys(); store.undo = []; }
+    if (snap.round != null && snap.round !== store.round) {
+      // Marks still queued from before a reset belong to the old round.
+      if (store.round != null) { store.send = []; store.undo = []; }
       store.round = snap.round;
       save();
     }
     if (snap.total < COMMUNITY.goal) {
-      const missing = doneKeys().filter(k => !snap.completed.includes(k) && !store.skip.includes(k));
-      for (const k of missing) await rpc('mission_complete', { p_challenge: k });
+      const sends = [...store.send];
+      for (const k of sends) {
+        await rpc('mission_complete', { p_challenge: k });
+        store.send = store.send.filter(x => x !== k);
+        save();
+      }
       const undos = [...store.undo];
       for (const k of undos) {
         await rpc('mission_undo', { p_challenge: k });
         store.undo = store.undo.filter(x => x !== k);
         save();
       }
-      if (missing.length || undos.length) snap = await rpc('mission_snapshot');
+      if (sends.length || undos.length) snap = await rpc('mission_snapshot');
     }
     communityTotal = Number(snap.total) || 0;
     communityByDomain = snap.by_category || {};
@@ -836,8 +841,10 @@ function draw() {
 function markDone() {
   const before = doneTotal();
   const done = doneOf(current);
+  const key = `${current}-${store.cur[current]}`;
   if (!done.includes(store.cur[current])) done.push(store.cur[current]);
-  store.undo = store.undo.filter(k => k !== `${current}-${store.cur[current]}`);
+  store.undo = store.undo.filter(k => k !== key);
+  if (!store.send.includes(key)) store.send.push(key);
   save();
   syncCommunity();
   $('#confirm').close();
@@ -857,8 +864,11 @@ const ACT = {
     dialog.showModal();
   },
   undo() {
+    const key = `${current}-${store.cur[current]}`;
     store.done[current] = doneOf(current).filter(i => i !== store.cur[current]);
-    store.undo.push(`${current}-${store.cur[current]}`);
+    // A mark the server never got is simply dropped; otherwise ask it to subtract.
+    if (store.send.includes(key)) store.send = store.send.filter(k => k !== key);
+    else if (!store.undo.includes(key)) store.undo.push(key);
     save();
     syncCommunity();
     setState('up');

@@ -40,7 +40,7 @@ Pentru activare:
 4. Completează `supabaseUrl` și `supabaseKey` în `COMMUNITY`, cu cheia publică (publishable/anon). Nu pune niciodată cheia `service_role` în site.
 5. Verifică limita de autentificări anonime pe IP la Authentication > Rate Limits. La festival, mulți participanți pot ieși pe același IP.
 
-Fiecare telefon primește un cod anonim, iar o provocare se numără o singură dată pentru fiecare cod. Bifările sunt pe încredere, nu dovezi: cine își șterge datele din browser primește un cod nou. Progresul personal rămâne pe telefon, iar site-ul trimite la server doar ce lipsește. Dacă serverul nu răspunde, contorul rămâne la ultimul număr primit sau fără număr, iar cărțile merg în continuare. „Scoate bifa” scade din total, „Ia-o de la capăt” nu. După 1.000 contorul se oprește, dar progresul personal continuă.
+Fiecare telefon primește un cod anonim, iar o provocare se numără o singură dată pentru fiecare cod. Bifările sunt pe încredere, nu dovezi: cine își șterge datele din browser primește un cod nou. Progresul personal rămâne pe telefon, iar site-ul trimite la server o provocare doar în momentul în care e bifată (dacă nu e conexiune, o trimite mai târziu). Provocările bifate mai demult nu se retrimit niciodată. Dacă serverul nu răspunde, contorul rămâne la ultimul număr primit sau fără număr, iar cărțile merg în continuare. „Scoate bifa” scade din total, „Ia-o de la capăt” nu. După 1.000 contorul se oprește, dar progresul personal continuă.
 
 ### Resetarea contorului
 
